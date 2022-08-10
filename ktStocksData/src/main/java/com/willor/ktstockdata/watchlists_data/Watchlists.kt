@@ -1,6 +1,6 @@
 package com.willor.ktstockdata.watchlists_data
 
-import com.willor.ktstockdata.common.getRandomUserAgent
+import com.willor.ktstockdata.common.NetworkClient
 import com.willor.ktstockdata.common.parseDouble
 import com.willor.ktstockdata.common.parseLongFromBigAbbreviatedNumbers
 import com.willor.ktstockdata.watchlists_data.dataobjects.Ticker
@@ -14,9 +14,8 @@ class Watchlists {
 
     private fun scrapeYfWatchList(url: String): List<List<String>>? {
         try {
-            val doc: Document? = Jsoup.connect(url)
-                .userAgent(getRandomUserAgent())
-                .get()
+            val page = NetworkClient.getWebpage(url)
+            val doc: Document? = Jsoup.parse(page)
 
             val rows = doc?.select("tr") ?: return null
 
@@ -111,10 +110,10 @@ class Watchlists {
         return Watchlist(wlName, tickers)
     }
 
-    fun searchForWatchlistByKeywords(vararg keywords: String): List<WatchlistNames>?{
-        val matches = mutableListOf<WatchlistNames>()
+    fun searchForWatchlistByKeywords(vararg keywords: String): List<WatchlistOptions>?{
+        val matches = mutableListOf<WatchlistOptions>()
 
-        for(w in WatchlistNames.values()){
+        for(w in WatchlistOptions.values()){
             for (k in keywords){
                 if (w.name.contains(k.uppercase())){
                     matches.add(w)
@@ -130,93 +129,93 @@ class Watchlists {
         }
     }
 
-    fun getWatchlist(w: WatchlistNames): Watchlist?{
+    fun getWatchlist(w: WatchlistOptions): Watchlist?{
         when (w) {
-            WatchlistNames.GAINERS -> {
+            WatchlistOptions.GAINERS -> {
                 return getGainers()
             }
-            WatchlistNames.LOSERS -> {
+            WatchlistOptions.LOSERS -> {
                 return getLosers()
             }
-            WatchlistNames.TECH_STOCKS_THAT_MOVE_THE_MARKET -> {
+            WatchlistOptions.TECH_STOCKS_THAT_MOVE_THE_MARKET -> {
                 return getTechStocksThatMoveTheMarket()
             }
-            WatchlistNames.MOST_ACTIVE -> {
+            WatchlistOptions.MOST_ACTIVE -> {
                 return getMostActive()
             }
-            WatchlistNames.MOST_ACTIVE_PENNY_STOCKS -> {
+            WatchlistOptions.MOST_ACTIVE_PENNY_STOCKS -> {
                 return getMostActivePennyStocks()
             }
-            WatchlistNames.MOST_ACTIVE_SMALL_CAP_STOCKS-> {
+            WatchlistOptions.MOST_ACTIVE_SMALL_CAP_STOCKS-> {
                 return getMostActiveSmallCapStocks()
             }
-            WatchlistNames.MOST_BOUGHT_BY_ACTIVE_HEDGE_FUNDS -> {
+            WatchlistOptions.MOST_BOUGHT_BY_ACTIVE_HEDGE_FUNDS -> {
                 return getMostBoughtByActiveHedgeFunds()
             }
-            WatchlistNames.MOST_BOUGHT_BY_HEDGE_FUNDS -> {
+            WatchlistOptions.MOST_BOUGHT_BY_HEDGE_FUNDS -> {
                 return getMostBoughtByHedgeFunds()
             }
-            WatchlistNames.MOST_SOLD_BY_ACTIVE_HEDGE_FUNDS -> {
+            WatchlistOptions.MOST_SOLD_BY_ACTIVE_HEDGE_FUNDS -> {
                 return getMostSoldByActiveHedgeFunds()
             }
-            WatchlistNames.MOST_SOLD_BY_HEDGE_FUNDS-> {
+            WatchlistOptions.MOST_SOLD_BY_HEDGE_FUNDS-> {
                 return getMostSoldByHedgeFunds()
             }
-            WatchlistNames.MOST_NEWLY_ADDED_TO_WATCHLISTS-> {
+            WatchlistOptions.MOST_NEWLY_ADDED_TO_WATCHLISTS-> {
                 return getMostNewlyAddedToWatchlists()
             }
-            WatchlistNames.MOST_WATCHED_BY_RETAIL_TRADERS-> {
+            WatchlistOptions.MOST_WATCHED_BY_RETAIL_TRADERS-> {
                 return getMostWatchedByRetailTraders()
             }
-            WatchlistNames.LARGEST_FIFTY_TWO_WEEK_GAINS-> {
+            WatchlistOptions.LARGEST_FIFTY_TWO_WEEK_GAINS-> {
                 return getLargestFiftyTwoWeekGains()
             }
-            WatchlistNames.LARGEST_FIFTY_TWO_WEEK_LOSSES-> {
+            WatchlistOptions.LARGEST_FIFTY_TWO_WEEK_LOSSES-> {
                 return getLargestFiftyTwoWeekLosses()
             }
-            WatchlistNames.RECENT_FIFTY_TWO_WEEK_HIGHS-> {
+            WatchlistOptions.RECENT_FIFTY_TWO_WEEK_HIGHS-> {
                 return getRecentFiftyTwoWeekHighs()
             }
-            WatchlistNames.RECENT_FIFTY_TWO_WEEK_LOWS-> {
+            WatchlistOptions.RECENT_FIFTY_TWO_WEEK_LOWS-> {
                 return getRecentFiftyTwoWeekLows()
             }
-            WatchlistNames.BIG_EARNINGS_MISSES-> {
+            WatchlistOptions.BIG_EARNINGS_MISSES-> {
                 return getBigEarningsMisses()
             }
-            WatchlistNames.BIG_EARNINGS_BEATS-> {
+            WatchlistOptions.BIG_EARNINGS_BEATS-> {
                 return getBigEarningsBeats()
             }
-            WatchlistNames.CHINA_TECH_AND_INTERNET_STOCKS-> {
+            WatchlistOptions.CHINA_TECH_AND_INTERNET_STOCKS-> {
                 return getChinaTechAndInternet()
             }
-            WatchlistNames.E_COMMERCE_STOCKS-> {
+            WatchlistOptions.E_COMMERCE_STOCKS-> {
                 return getECommerceStocks()
             }
-            WatchlistNames.CANNABIS_STOCKS-> {
+            WatchlistOptions.CANNABIS_STOCKS-> {
                 return getCannabisStocks()
             }
-            WatchlistNames.SELF_DRIVING_CAR_STOCKS-> {
+            WatchlistOptions.SELF_DRIVING_CAR_STOCKS-> {
                 return getSelfDrivingCarStocks()
             }
-            WatchlistNames.VIDEO_GAME_DEVELOPER_STOCKS-> {
+            WatchlistOptions.VIDEO_GAME_DEVELOPER_STOCKS-> {
                 return getVideoGameStocks()
             }
-            WatchlistNames.BANKS_AND_FINANCIAL_SERVICES_STOCKS-> {
+            WatchlistOptions.BANKS_AND_FINANCIAL_SERVICES_STOCKS-> {
                 return getBankAndFinancialServicesStocks()
             }
-            WatchlistNames.MEDICAL_DEVICE_AND_RESEARCH_STOCKS-> {
+            WatchlistOptions.MEDICAL_DEVICE_AND_RESEARCH_STOCKS-> {
                 return getSelfDrivingCarStocks()
             }
-            WatchlistNames.SMART_MONEY_STOCKS-> {
+            WatchlistOptions.SMART_MONEY_STOCKS-> {
                 return getSmartMoneyStocks()
             }
-            WatchlistNames.DIVIDEND_GROWTH_MARKET_LEADERS-> {
+            WatchlistOptions.DIVIDEND_GROWTH_MARKET_LEADERS-> {
                 return getDividendGrowthMarketLeaders()
             }
-            WatchlistNames.BERKSHIRE_HATHAWAY_PORTFOLIO-> {
+            WatchlistOptions.BERKSHIRE_HATHAWAY_PORTFOLIO-> {
                 return getBerkshireHathawayPortfolio()
             }
-            WatchlistNames.BIOTECH_AND_DRUG_STOCKS-> {
+            WatchlistOptions.BIOTECH_AND_DRUG_STOCKS-> {
                 return getBioTechAndDrugStocks()
             }
         }
@@ -421,6 +420,6 @@ class Watchlists {
 }
 
 fun main() {
-    println(Watchlists().getWatchlist(WatchlistNames.BIOTECH_AND_DRUG_STOCKS))
+    println(Watchlists().getWatchlist(WatchlistOptions.BIOTECH_AND_DRUG_STOCKS))
 }
 

@@ -5,6 +5,7 @@ import com.willor.ktstockdata.common.getRandomUserAgent
 import com.willor.ktstockdata.common.parseDouble
 import com.willor.ktstockdata.misc_data.dataobjects.*
 import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
 import kotlin.Exception
 
 class MiscData: IMiscData{
@@ -42,7 +43,8 @@ class MiscData: IMiscData{
 
         try{
             val url = "https://finance.yahoo.com/world-indices"
-            val document = Jsoup.connect(url).userAgent(getRandomUserAgent()).get() ?: return null
+            val page = NetworkClient.getWebpage(url) ?: return null
+            val document = Jsoup.parse(page)
 
             val table = document.select("section#yfin-list")
             val rows = table.select("tr")
@@ -122,7 +124,13 @@ class MiscData: IMiscData{
     override fun getFuturesData(): MajorFuturesData?{
         try{
             val url = "https://finance.yahoo.com/commodities"
-            val document = Jsoup.connect(url).userAgent(getRandomUserAgent()).get() ?: return null
+
+            val rawHtmlString = NetworkClient.getWebpage(url) ?: return null
+
+            val document: Document = Jsoup.parse(rawHtmlString)
+
+
+//            val document = Jsoup.connect(url).userAgent(getRandomUserAgent()).get() ?: return null
 
             val table = document.select("section#yfin-list")
             val rows = table.select("tr")
@@ -178,7 +186,8 @@ class MiscData: IMiscData{
             // Get Document
             val tick = ticker.uppercase()
             val url = "https://www.barchart.com/stocks/quotes/${tick}/overview"
-            val doc = Jsoup.connect(url).userAgent(getRandomUserAgent()).get() ?: return null
+            val page = NetworkClient.getWebpage(url) ?: return null
+            val doc = Jsoup.parse(page)
 
             // Pull data rows
             val table = doc.select("div.bc-side-widget")

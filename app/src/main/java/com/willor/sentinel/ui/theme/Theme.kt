@@ -14,17 +14,27 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.ViewCompat
+import com.willor.sentinel.ui.theme.MyColors.DarkBackground
+import com.willor.sentinel.ui.theme.MyColors.DarkPrimary
+import com.willor.sentinel.ui.theme.MyColors.DarkSecondary
+import com.willor.sentinel.ui.theme.MyColors.DarkTertiary
+import com.willor.sentinel.ui.theme.MyColors.LightBackground
+import com.willor.sentinel.ui.theme.MyColors.LightPrimary
+import com.willor.sentinel.ui.theme.MyColors.LightSecondary
+import com.willor.sentinel.ui.theme.MyColors.LightTertiary
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = DarkPrimary,
+    secondary = DarkSecondary,
+    tertiary = DarkTertiary,
+    background = DarkBackground,
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
+    primary = DarkPrimary,
+    secondary = DarkSecondary,
+    tertiary = DarkTertiary,
+    background = DarkBackground,
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
@@ -44,11 +54,12 @@ fun SentinelTheme(
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
+
     val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
+//        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+//            val context = LocalContext.current
+//            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+//        }
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }

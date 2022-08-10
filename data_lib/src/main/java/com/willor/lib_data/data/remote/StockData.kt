@@ -11,7 +11,7 @@ import com.willor.ktstockdata.quote_data.Quotes
 import com.willor.ktstockdata.quote_data.dataobjects.ETFQuote
 import com.willor.ktstockdata.quote_data.dataobjects.OptionStats
 import com.willor.ktstockdata.quote_data.dataobjects.StockQuote
-import com.willor.ktstockdata.watchlists_data.WatchlistNames
+import com.willor.ktstockdata.watchlists_data.WatchlistOptions
 import com.willor.ktstockdata.watchlists_data.Watchlists
 import com.willor.ktstockdata.watchlists_data.dataobjects.Watchlist
 import com.willor.lib_data.domain.abstraction.IStockData
@@ -66,7 +66,7 @@ class StockData: IStockData {
     }
 
 
-    override fun getWatchlist(w: WatchlistNames): Watchlist? {
+    override fun getWatchlist(w: WatchlistOptions): Watchlist? {
         return watchlistApi.getWatchlist(w)
     }
 

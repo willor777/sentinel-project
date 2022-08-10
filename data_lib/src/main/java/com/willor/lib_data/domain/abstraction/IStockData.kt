@@ -8,7 +8,7 @@ import com.willor.ktstockdata.misc_data.dataobjects.SnRLevels
 import com.willor.ktstockdata.quote_data.dataobjects.ETFQuote
 import com.willor.ktstockdata.quote_data.dataobjects.OptionStats
 import com.willor.ktstockdata.quote_data.dataobjects.StockQuote
-import com.willor.ktstockdata.watchlists_data.WatchlistNames
+import com.willor.ktstockdata.watchlists_data.WatchlistOptions
 import com.willor.ktstockdata.watchlists_data.dataobjects.Watchlist
 
 
@@ -27,7 +27,7 @@ interface IStockData {
 
     fun getSupportAndResistance(ticker: String): SnRLevels?
 
-    fun getWatchlist(w: WatchlistNames): Watchlist?
+    fun getWatchlist(w: WatchlistOptions): Watchlist?
 
     fun getHistoryAsAdvancedStockChart(
         ticker: String,
