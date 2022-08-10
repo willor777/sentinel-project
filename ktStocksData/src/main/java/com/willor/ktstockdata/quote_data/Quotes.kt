@@ -33,10 +33,9 @@ class Quotes: IQuotes {
         try{
             val url = "https://finance.yahoo.com/quote/$ticker?p=$ticker&.tsrc=fin-srch"
 
-            // You can add cookies / headers / set useragent here
-            val document: Document = Jsoup.connect(url)
-                .userAgent(getRandomUserAgent())
-                .get() ?: return null
+            val page = NetworkClient.getWebpage(url) ?: return null
+
+            val document: Document = Jsoup.parse(page)
 
             val table: Elements = document.select("div#quote-summary") ?: return null
 
@@ -70,9 +69,8 @@ class Quotes: IQuotes {
             // NOTE -- Even though this url is for a Stock, it seems to work for ETFs as well
             // further testing is required
             val url = "https://www.barchart.com/stocks/quotes/$ticker/overview"
-            val doc: Document = Jsoup.connect(url)
-                .userAgent(getRandomUserAgent())
-                .get() ?: return null
+            val page = NetworkClient.getWebpage(url) ?: return null
+            val doc: Document = Jsoup.parse(page)
 
             val tableOfOptionStats = doc.select(
                 "div.block-content"

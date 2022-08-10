@@ -8,7 +8,7 @@ import com.willor.ktstockdata.misc_data.dataobjects.SnRLevels
 import com.willor.ktstockdata.quote_data.dataobjects.ETFQuote
 import com.willor.ktstockdata.quote_data.dataobjects.OptionStats
 import com.willor.ktstockdata.quote_data.dataobjects.StockQuote
-import com.willor.ktstockdata.watchlists_data.WatchlistNames
+import com.willor.ktstockdata.watchlists_data.WatchlistOptions
 import com.willor.ktstockdata.watchlists_data.dataobjects.Watchlist
 import kotlinx.coroutines.flow.Flow
 
@@ -26,7 +26,7 @@ interface IRepo {
 
     fun getSupportAndResistance(ticker: String): Flow<Resource<SnRLevels>>
 
-    fun getWatchlist(w: WatchlistNames): Flow<Resource<Watchlist>>
+    fun getWatchlist(w: WatchlistOptions): Flow<Resource<Watchlist>>
 
     fun getHistoricDataAsAdvancedStockChart(
         ticker: String,

@@ -187,8 +187,3 @@ fun calculateEma(curValue: Double, prevEma: Double, window: Int, smoothingFactor
     return (curValue * k) + (prevEma * (1 - k))
 
 }
-
-
-fun printToDEBUG(msg: String){
-    Log.d("DEBUG", msg)
-}

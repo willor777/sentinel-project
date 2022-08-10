@@ -9,10 +9,10 @@ import com.willor.ktstockdata.misc_data.dataobjects.SnRLevels
 import com.willor.ktstockdata.quote_data.dataobjects.ETFQuote
 import com.willor.ktstockdata.quote_data.dataobjects.OptionStats
 import com.willor.ktstockdata.quote_data.dataobjects.StockQuote
-import com.willor.ktstockdata.watchlists_data.WatchlistNames
+import com.willor.ktstockdata.watchlists_data.WatchlistOptions
 import com.willor.ktstockdata.watchlists_data.dataobjects.Watchlist
-import com.willor.lib_data.data.local.StockDataDb
-import com.willor.lib_data.data.local.models.*
+import com.willor.lib_data.data.local.local_db.StockDataDb
+import com.willor.lib_data.domain.models.*
 import com.willor.lib_data.domain.abstraction.IRepo
 import com.willor.lib_data.domain.abstraction.IStockData
 import com.willor.lib_data.domain.abstraction.Resource
@@ -327,7 +327,7 @@ class RepoImpl @Inject constructor(
     }
 
 
-    override fun getWatchlist(w: WatchlistNames): Flow<Resource<Watchlist>> {
+    override fun getWatchlist(w: WatchlistOptions): Flow<Resource<Watchlist>> {
         val checkCache = {
             var result: Watchlist? = null
 
@@ -493,34 +493,6 @@ class RepoImpl @Inject constructor(
 
 
 }
-
-
-
-
-fun main() {
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

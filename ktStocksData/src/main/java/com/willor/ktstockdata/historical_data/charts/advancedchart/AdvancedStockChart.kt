@@ -56,6 +56,23 @@ class AdvancedStockChart(
     }
 
 
+    fun getSliceChartAsAdvancedStockChart(startIndex: Int, endIndex: Int): AdvancedStockChart{
+        return AdvancedStockChart(
+            ticker,
+            interval,
+            periodRange + "--minus ${endIndex - startIndex} candles",
+            prepost,
+            getSublistOfDatetime(startIndex, endIndex),
+            getSublistOfTimestamp(startIndex, endIndex),
+            getSublistOfOpen(startIndex, endIndex),
+            getSublistOfHigh(startIndex, endIndex),
+            getSublistOfLow(startIndex, endIndex),
+            getSublistOfClose(startIndex, endIndex),
+            getSublistOfVolume(startIndex, endIndex)
+        )
+    }
+
+
     /**
      * Calculates the size of candle from High to Low for given index.
      */
@@ -161,7 +178,7 @@ class AdvancedStockChart(
             return false
         }
 
-        return getHeadSizeAsPercentageOfTotalSize(index) < .1
+        return getHeadSizeAsPercentageOfTotalSize(index) < .05
     }
 
 
@@ -177,7 +194,7 @@ class AdvancedStockChart(
             return false
         }
 
-        return getTailSizeAsPercentageOfTotalSize(index) < .1
+        return getTailSizeAsPercentageOfTotalSize(index) < .05
     }
 
 
@@ -242,5 +259,125 @@ class AdvancedStockChart(
         val avgHighToLow = getAvgCandleHighToLow(index, window)
 
         return targetCandle / avgHighToLow
+    }
+
+
+    /**
+     * Returns true if candle is Green
+     */
+    fun isGreenCandle(index: Int): Boolean{
+
+        return when (getCandleColorAsGorRorB(index)) {
+            "G" -> {
+                true
+            }
+            else -> {
+                false
+            }
+        }
+    }
+
+
+    /**
+     * Returns true if candle is Red
+     */
+    fun isRedCandle(index: Int): Boolean{
+        return when (getCandleColorAsGorRorB(index)){
+            "R" -> {
+                true
+            }
+            else -> {
+                false
+            }
+        }
+    }
+
+
+    /**
+     * Checks if candle is above average body size
+     */
+    fun isAboveAvgBodySize(index: Int, windowForAvg: Int = 5): Boolean{
+        val candle = getCandleAtIndex(index)
+
+        return getCandleBodyMeasurement(index) > getAvgCandleBody(index, windowForAvg)
+    }
+
+
+    /**
+     * Check if candle is above average high to low size
+     */
+    fun isAboveAvgHighToLowSize(index: Int, windowForAvg: Int = 5): Boolean{
+        return getCandleHighToLowMeasurement(index) > getAvgCandleHighToLow(index, windowForAvg)
+    }
+
+
+    /**
+     * Returns true if candle has is Green + no Tail + no Head + is Above Avg Body Size for span
+     */
+    fun isFullBody(index: Int): Boolean{
+        return getHeadSizeAsPercentageOfTotalSize(index) < .05 &&
+                getTailSizeAsPercentageOfTotalSize(index) < .05
+    }
+
+
+    /**
+     * Returns true if candle is < 50% size of avg body, with both Head & Tail > 50% avg body
+     */
+    fun isPinBar(index: Int, windowForAvg: Int = 5): Boolean{
+        val halfAvgBody = getAvgCandleBody(index, windowForAvg) * .5
+
+        val head = getHeadSizeAsPercentageOfTotalSize(index)
+        if (head < halfAvgBody){
+            return false
+        }
+
+        val tail = getTailSizeAsPercentageOfTotalSize(index)
+        if (tail < halfAvgBody){
+            return false
+        }
+
+        if (getCandleBodyMeasurement(index) > halfAvgBody){
+            return false
+        }
+
+        return true
+    }
+
+
+    /**
+     * Returns true if candle is Top Body Hammer. (Small Body + No Head + Big Tail)
+     */
+    fun isTopBodyHammer(index: Int): Boolean{
+
+        // Closed at/near high (.05%)
+        if (!closedAtHigh(index)){
+            return false
+        }
+
+        // If big tail, return true
+        if (getTailSizeAsPercentageOfTotalSize(index) > .5){
+            return true
+        }
+
+        return false
+    }
+
+
+    /**
+     * Returns true if candle is Bottom Body Hammer. (Small Body + No Tail + Big Head)
+     */
+    fun isBottomBodyHammer(index: Int): Boolean{
+
+        // Closed at/near low (.05%)
+        if (!closedAtLow(index)){
+            return false
+        }
+
+        // If big head, return true
+        if (getHeadSizeAsPercentageOfTotalSize(index) > .5){
+            return true
+        }
+
+        return false
     }
 }
