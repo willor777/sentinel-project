@@ -12,4 +12,5 @@ object DbConstants {
     const val SIMPLE_CHART_TABLE = "SIMPLE_CHART_TABLE"
     const val S_N_R_TABLE = "SNR_TABLE"
     const val WATCHLIST_TABLE = "WATCHLIST_TABLE"
+    const val TRIGGER_TABLE = "TRIGGER_TABLE"
 }

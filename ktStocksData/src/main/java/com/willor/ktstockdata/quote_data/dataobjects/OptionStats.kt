@@ -4,8 +4,8 @@ import java.util.*
 
 data class OptionStats(
     val ticker: String,
-    val ivPercentage: Double,
-    val ivPercentageTodaysChange: Double,
+    val impVol: Double,
+    val impVolChangeToday: Double,
     val historicalVolatilityPercentage: Double,
     val ivPercentile: Double,
     val ivRank: Double,

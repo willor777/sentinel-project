@@ -10,7 +10,7 @@ import java.util.*
 
 fun OptionStats.toOptionStatsEntity(): OptionStatsEntity{
     return OptionStatsEntity(
-        ticker, System.currentTimeMillis(), ivPercentage, ivPercentageTodaysChange,
+        ticker, System.currentTimeMillis(), impVol, impVolChangeToday,
         historicalVolatilityPercentage, ivPercentile, ivRank, ivHighLastYear,
         ivHighDate, ivLowLastYear, ivLowDate, putCallVolumeRatio, optionVolumeToday,
         optionVolumeAvgThirtyDay, putCallOpenInterestRatio, openInterestToday, 

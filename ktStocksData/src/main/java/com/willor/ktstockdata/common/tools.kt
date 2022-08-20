@@ -64,6 +64,11 @@ internal fun getRandomUserAgent(): String{
 internal fun parseDouble(str: String): Double{
 
     return try{
+        // Check for N/A
+        if (str.contains("N/A")){
+            return 0.0
+        }
+
         var s = str.replace(" ", "")
         if (!(s[s.lastIndex].isDigit()) && s.contains("-")){
             return 0.0
@@ -84,6 +89,22 @@ internal fun parseDouble(str: String): Double{
  * return 0 as default
  */
 internal fun parseLongFromBigAbbreviatedNumbers(str: String): Long{
+
+    val spltNonDecimal = {s: String ->
+        var indexOne: String = ""
+        var indexTwo: String = ""
+
+        for (n in 0..s.lastIndex){
+            if (s[n].isDigit()){
+                indexOne += s[n]
+            }else{
+                indexTwo += s[n]
+            }
+        }
+
+        mutableListOf(indexOne, indexTwo)
+    }
+
     try{
         // Remove spaces
         val s = str.replace(" ", "").replace(",", "")
@@ -93,7 +114,16 @@ internal fun parseLongFromBigAbbreviatedNumbers(str: String): Long{
             return s.replace(",", "").toLong()
         }
 
-        val splitString = s.split(".")
+        var splitString: MutableList<String>
+
+        // Check for non decimal abbreviated number
+        if (!s.contains(".")){
+            splitString = spltNonDecimal(s)
+        }else{
+            splitString = s.split(".").toMutableList()
+
+        }
+
         val previxValue = splitString[0]
 
         when {
@@ -131,7 +161,7 @@ internal fun parseLongFromBigAbbreviatedNumbers(str: String): Long{
         return 0
     }catch (e: Exception){
         Log.d("EXCEPTION", "tools.parseLongFromBigAbbreviatedNumbers() Failed to parse" +
-                " Long. Returning 0.0 by default\n" + e.stackTraceToString())
+                " Long. Returning 0.0 by default. Cause: $str\n" + e.stackTraceToString())
         return 0
     }
 }

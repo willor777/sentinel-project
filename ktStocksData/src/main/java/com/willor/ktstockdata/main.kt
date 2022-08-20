@@ -2,17 +2,13 @@ package com.willor.ktstockdata
 
 import com.willor.ktstockdata.historical_data.History
 import com.willor.ktstockdata.historical_data.charts.simplechart.SimpleStockChart
+import com.willor.ktstockdata.quote_data.Quotes
 
 
 fun main() {
-// Create History Object
-    val history = History()
 
-// If you just want the stock data
-    val simpleChart: SimpleStockChart = history.getHistoryAsSimpleStockChart(
-        "SPY", interval = "5m", periodRange = "7d", prepost = true
-    )!!
+    val test = Quotes().getStockQuote("DNA")
 
-    println(simpleChart.close)
+    println(test)
 }
 

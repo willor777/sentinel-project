@@ -4,9 +4,10 @@ import com.google.gson.Gson
 import java.lang.Exception
 
 data class SentinelSettings(
-    val scanInterval: Long = 60_000,
-    val currentWatchlist: MutableList<String> = mutableListOf(),
-    val currentScanAlgo: String = "BASIC",
+    var scanInterval: Long = 60_000,
+    var lastScan: Long = 0,
+    var currentWatchlist: MutableList<String> = mutableListOf(),
+    var currentScanAlgo: String = "BASIC",
 ){
     companion object{
         fun fromJson(json: String): SentinelSettings{

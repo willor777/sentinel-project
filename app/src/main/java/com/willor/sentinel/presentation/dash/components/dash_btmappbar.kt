@@ -11,15 +11,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
+import com.willor.ktstockdata.watchlists_data.dataobjects.Watchlist
 import com.willor.lib_data.utils.printToDEBUGTEMP
 import kotlinx.coroutines.flow.MutableStateFlow
 
 
 @Composable
-fun DashBottomAppBar(){
-
-    val sentinelStartSelected = remember{ mutableStateOf(false)}
-    var editWatchlistSelected = remember{ mutableStateOf(false)}
+fun DashBottomAppBar(
+    editWatchlistOnClick: () -> Unit,
+    startSentinelOnClick: () -> Unit
+){
 
     BottomAppBar(
         backgroundColor = MaterialTheme.colorScheme.primary,
@@ -27,14 +28,14 @@ fun DashBottomAppBar(){
 
         // Edit Sentinel Watchlist
         BottomNavigationItem(
-            selected = editWatchlistSelected.value,
+            selected = false,
             label = {
                 Text("Edit Watchlist", fontSize = 9.sp, color = Color.White)
             },
             alwaysShowLabel = true,
             onClick = {
-                editWatchlistSelected.value = true
                 printToDEBUGTEMP("Edit watchlist clicked")
+                editWatchlistOnClick()
             },
             icon = {
                 Icon(Icons.Filled.EditNote, "edit watchlist", tint = Color.White)
@@ -43,19 +44,18 @@ fun DashBottomAppBar(){
 
         // Sentinel Start Selected
         BottomNavigationItem(
-            selected = sentinelStartSelected.value,
+            selected = false,
             label = {
                     Text("Start Sentinel", fontSize = 9.sp, color = Color.White)
             },
             alwaysShowLabel = true,
             onClick = {
-                      printToDEBUGTEMP("Start Sentinel Clicked")
+                printToDEBUGTEMP("Start Sentinel Clicked")
+                startSentinelOnClick()
             },
             icon = {
                 Icon(Icons.Filled.Radar, "start sentinel", tint = Color.White)
             }
         )
-
-
     }
 }

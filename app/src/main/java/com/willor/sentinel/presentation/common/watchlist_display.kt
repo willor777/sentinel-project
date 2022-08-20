@@ -32,7 +32,7 @@ fun WatchlistDisplay(
         LazyColumn(modifier = Modifier
             .fillMaxSize()
             .padding(Sizes.HORIZONTAL_PADDING_SMALL, Sizes.VERTICAL_PADDING_SMALL),
-            verticalArrangement = Arrangement.spacedBy(30.dp)
+            verticalArrangement = Arrangement.spacedBy(Sizes.CONTENT_SPACER_LARGE)
         ){
 
             items(watchlist.tickers.size){index ->

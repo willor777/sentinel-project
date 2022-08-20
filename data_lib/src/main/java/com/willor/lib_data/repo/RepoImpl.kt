@@ -16,7 +16,9 @@ import com.willor.lib_data.domain.models.*
 import com.willor.lib_data.domain.abstraction.IRepo
 import com.willor.lib_data.domain.abstraction.IStockData
 import com.willor.lib_data.domain.abstraction.Resource
+import com.willor.sentinel_bots.domain.models.TriggerBase
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
@@ -25,7 +27,7 @@ class RepoImpl @Inject constructor(
     private val db: StockDataDb,
     private val api: IStockData) : IRepo {
 
-
+    private val locTAG = "RepoImpl"
 
     private val quoteTimeout: Long = 10_000
     private val chartTimeout: Long = 10_000
@@ -371,8 +373,7 @@ class RepoImpl @Inject constructor(
     }
 
 
-    override
-    fun getHistoricDataAsAdvancedStockChart(
+    override fun getHistoricDataAsAdvancedStockChart(
         ticker: String,
         interval: String,
         periodRange: String,
@@ -491,8 +492,61 @@ class RepoImpl @Inject constructor(
     }
 
 
+    override fun buildAndSaveTriggerEntity(
+        trigger: TriggerBase,
+    ): TriggerEntity {
 
+        // Log the method call
+        Log.d("INFO", "$locTAG.buildAndSaveTriggerEntity() Called for trigger: $trigger")
+
+        // Build trigger entity
+        val trigEntity = TriggerEntity(
+            timestamp = System.currentTimeMillis(),
+            ticker = trigger.ticker,
+            triggerValue = trigger.triggerValue,
+            rating = trigger.rating,
+            strategyName = trigger.strategyName,
+            strategyDescription = trigger.strategyDescription,
+            priceOfAsset = trigger.priceOfAsset,
+            volumeOfTriggerCandle = trigger.volumeOfTriggerCandle,
+        )
+
+        // Insert into db
+        db.getTriggerTableDAO().insertAllIntoTable(
+            trigEntity
+        )
+
+        // Return for display purposes
+        return trigEntity
+    }
+
+
+    override suspend fun getAllTriggersWithinTimeRange(
+        rangeStart: Long?,
+        rangeEnd: Long?
+    ): Flow<List<TriggerEntity>?> {
+
+        // If null, end is current time
+        val end: Long = rangeEnd ?: System.currentTimeMillis()
+
+        // If null, start is 12hrs prior to end
+        val start: Long = rangeStart ?: (end - (((60 * 60).toLong() * 12) * 1000))
+        return db.getTriggerTableDAO().getAllFromTableInTimeRangeAsFlow(start, end)
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
