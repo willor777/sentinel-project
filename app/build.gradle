@@ -66,7 +66,7 @@ android {
 dependencies {
     implementation project(':data_lib')
     implementation project(':ktStocksData')
-    implementation project (':sentinel_bots')
+    implementation project(':strategies')
 
     // Secondary Lib Module in project
 
@@ -99,7 +99,8 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.5.1"
     
     // Room
-    implementation "androidx.room:room-runtime:2.4.3" 
+    implementation "androidx.room:room-runtime:2.4.3"
+    implementation "androidx.room:room-ktx:2.4.3"
     kapt "androidx.room:room-compiler:2.4.3"
     
     // Kapt + Dagger-Hilt
@@ -110,7 +111,8 @@ dependencies {
     implementation 'androidx.hilt:hilt-navigation-compose:1.0.0'
 
     // Raam Costa Nav
-    implementation 'io.github.raamcosta.compose-destinations:core:1.5.15-beta'
+//    implementation 'io.github.raamcosta.compose-destinations:core:1.5.15-beta'
+    implementation 'io.github.raamcosta.compose-destinations:animations-core:1.5.15-beta'
     ksp 'io.github.raamcosta.compose-destinations:ksp:1.5.15-beta'
 
     // Lottie Animations
@@ -124,6 +126,7 @@ dependencies {
 
     // Gson
     implementation 'com.google.code.gson:gson:2.9.1'
+
 
 }
 

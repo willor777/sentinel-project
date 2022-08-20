@@ -9,17 +9,20 @@ import java.util.*
 
 fun ETFQuoteEntity.toETFQuote(): ETFQuote{
     return ETFQuote(
-        this.ticker!!, this.prevClose!!, this.openPrice!!, this.bidPrice!!, this.bidSize!!, this.askPrice!!,
+        this.ticker!!, this.changeDollarToday!!, this.changePctToday!!, this.curPrice!!,
+        this.prevClose!!, this.openPrice!!, this.bidPrice!!, this.bidSize!!, this.askPrice!!,
         this.askSize!!, this.daysRangeHigh!!, this.daysRangeLow!!, this.fiftyTwoWeekRangeHigh!!,
         this.fiftyTwoWeekRangeLow!!, this.volume!!, this.avgVolume!!, this.netAssets!!, this.nav!!,
         this.peRatioTTM!!, this.yieldPercentage!!, this.yearToDateTotalReturn!!, this.betaFiveYearMonthly!!,
-        this.expenseRatioNetPercentage!!, this.inceptionDate!!
+        this.expenseRatioNetPercentage!!, this.inceptionDate
     )
 }
 
 fun ETFQuote.toETFQuoteEntity(): ETFQuoteEntity{
     return ETFQuoteEntity(
-        ticker = ticker, prevClose = prevClose, openPrice = openPrice, bidPrice = bidPrice,
+        ticker = ticker, changeDollarToday = changeDollarToday,
+        changePctToday = changePctToday, curPrice = curPrice, prevClose = prevClose,
+        openPrice = openPrice, bidPrice = bidPrice,
         bidSize = bidSize, askPrice = askPrice, askSize = askSize, daysRangeHigh = daysRangeHigh,
         daysRangeLow = daysRangeLow, fiftyTwoWeekRangeHigh = fiftyTwoWeekRangeHigh,
         fiftyTwoWeekRangeLow = fiftyTwoWeekRangeLow, volume = volume, avgVolume = avgVolume,
@@ -35,6 +38,9 @@ fun ETFQuote.toETFQuoteEntity(): ETFQuoteEntity{
 data class ETFQuoteEntity(
     @PrimaryKey val ticker: String = "NONE",
     @ColumnInfo val timeSaved: Long = System.currentTimeMillis(),
+    @ColumnInfo val changeDollarToday: Double? = null,
+    @ColumnInfo val changePctToday: Double? = null,
+    @ColumnInfo val curPrice: Double? = null,
     @ColumnInfo val prevClose: Double? = null,
     @ColumnInfo val openPrice: Double? = null,
     @ColumnInfo val bidPrice: Double? = null,

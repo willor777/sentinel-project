@@ -38,7 +38,7 @@ fun WatchlistTickerDisplayCard(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(240.dp)
+                .wrapContentHeight()
                 .background(MaterialTheme.colorScheme.secondary)
                 .clickable {
                     onCardClicked(ticker.ticker)
@@ -59,7 +59,7 @@ fun WatchlistTickerDisplayCard(
 
             MarketCap(ticker = ticker)
 
-            Spacer(Modifier.height(Sizes.CONTENT_SPACER_NORMAL))
+            Spacer(Modifier.height(Sizes.CONTENT_SPACER_SMALL))
 
             AddButton(
                 ticker = ticker,
@@ -259,7 +259,7 @@ fun MarketCap(
         )
 
         Text(
-            ticker.marketCap.toCommaString(),
+            "$ ${ticker.marketCap.toCommaString()}",
             fontSize = MaterialTheme.typography.titleMedium.fontSize,
             fontWeight = MaterialTheme.typography.titleMedium.fontWeight,
             color = Color.White
@@ -277,18 +277,20 @@ fun AddButton(
         Modifier
             .fillMaxWidth()
             .padding(Sizes.HORIZONTAL_PADDING_NORMAL, Sizes.VERTICAL_PADDING_SMALL),
-        horizontalArrangement = Arrangement.SpaceEvenly
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
     ){
 
         Text(
-            "Add Ticker To Watchlist",
+            "Add To Watchlist",
             fontSize = MaterialTheme.typography.titleMedium.fontSize,
             fontWeight = MaterialTheme.typography.titleMedium.fontWeight,
             color = Color.White
         )
 
         IconButton(
-            onClick = { onAddButtonClicked(ticker) }
+            onClick = { onAddButtonClicked(ticker) },
+            modifier = Modifier.wrapContentSize()
         ){
             Icon(Icons.Filled.AddCircle, "add circle", tint = Color.White)
         }

@@ -6,7 +6,7 @@ import com.willor.lib_data.utils.DbConstants
 
 
 @Dao
-interface OptionStatsTableDao {
+interface OptionStatsTableDAO {
     @Query("SELECT * FROM ${DbConstants.OPTION_STATS_TABLE}")
     fun getAllFromTable(): List<OptionStatsEntity>?
 

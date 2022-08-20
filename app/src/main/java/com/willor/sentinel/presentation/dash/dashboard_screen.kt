@@ -16,12 +16,11 @@ import com.willor.ktstockdata.misc_data.dataobjects.MajorFuturesData
 import com.willor.ktstockdata.watchlists_data.WatchlistOptions
 import com.willor.ktstockdata.watchlists_data.dataobjects.Watchlist
 import com.willor.lib_data.utils.printToDEBUGTEMP
-import com.willor.sentinel.presentation.common.LoadingDataAnimation
+import com.willor.sentinel.presentation.common.AnimatedLoadingScreen
 import com.willor.sentinel.presentation.common.SentinelWatchlistSimple
 import com.willor.sentinel.presentation.dash.components.*
+import com.willor.sentinel.presentation.destinations.SentinelActiveScreenDestination
 import com.willor.sentinel.ui.theme.Sizes
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 
 /**
@@ -48,48 +47,26 @@ fun DashboardScreen(
     // TODO you should prolly check that this is loaded before showing dashboard content
     val curSentinelWatchlist = viewModel.curSentinelWatchlist.collectAsState()
 
-    var showAnimation by remember{ mutableStateOf(true)}
-
     var showErrorDialog by remember { mutableStateOf(false)}
 
     var showContent by remember { mutableStateOf(false)}
 
-    // Coroutine responsible for checking if data has been loaded or not
-    rememberCoroutineScope().launch {
-
-        var counter = 0
-
-        while(true){
+    AnimatedLoadingScreen(
+        conditionCheck = {
             // Check for data success
-            if (futures.value != null && watchlist.value != null && preferences.value != null){
-                showAnimation = false
-                showContent = true
-                break
-            }
+            futures.value != null && watchlist.value != null && preferences.value != null
+        },
+        onConditionSuccess = {
+            showContent = true
+        },
+        maxTime = 20_000,
+        onMaxTimeReached = {
 
-            // Check counter
-            if (counter > 20){
-                showAnimation = false
-                showErrorDialog = true
-                break
-            }
-
-            // Increment counter
-            counter ++
-
-            // Sleep
-            delay(500)
         }
+    ) {
+        Text("Loading...")
     }
 
-    // Animation to display while loading is active
-    LoadingDataAnimation(
-        showAnimation,
-        loadingText = {
-            Text("Loading Please Wait",
-                fontSize = MaterialTheme.typography.bodyMedium.fontSize)
-        }
-    )
 
     // If loading fails after 10s, shows an error dialog
     FailedToLoadToast(showErrorDialog)
@@ -101,6 +78,13 @@ fun DashboardScreen(
         futuresData = futures,
         watchlistData = watchlist,
         sentinelWatchlist = curSentinelWatchlist,
+        btmbarEditWatchlistOnClick = {},
+        btmBarStartSentinelOnClick = {
+
+
+
+            navigator.navigate(SentinelActiveScreenDestination)
+        },
         watchlistChipOnClick = {
             viewModel.changeYfWatchlist(it)
         },
@@ -136,6 +120,8 @@ fun DashboardScreenContent(
     futuresData: State<MajorFuturesData?>,
     watchlistData: State<Watchlist?>,
     sentinelWatchlist: State<List<String>?>,
+    btmbarEditWatchlistOnClick: () -> Unit = {},
+    btmBarStartSentinelOnClick: () -> Unit = {},
     watchlistChipOnClick: (WatchlistOptions) -> Unit = {},
     watchlistCardOnClick: (ticker: String) -> Unit = {},
     watchlistCardAddOnClick: (ticker: String) -> Unit = {},
@@ -163,7 +149,10 @@ fun DashboardScreenContent(
             // Bottom Bar
             bottomBar = {
                 // TODO Add bottom bar
-                        DashBottomAppBar()
+                DashBottomAppBar(
+                    editWatchlistOnClick = { btmbarEditWatchlistOnClick() },
+                    startSentinelOnClick = { btmBarStartSentinelOnClick() }
+                )
             },
 
             // Drawer Content
@@ -180,13 +169,13 @@ fun DashboardScreenContent(
             ){
 
                 // Spacer to separate TopAppBar and Futures Chips
-                Spacer(Modifier.height(Sizes.CONTENT_SPACER_SMALL))
+                Spacer(Modifier.height(Sizes.CONTENT_SPACER_LARGE))
                 
                 // Futures Display
                 FuturesDisplay(navigator = navigator, majorFuturesData = futuresData.value!!)
 
                 // Spacer to separate Watchlist selector chips from Futures display
-                Spacer(Modifier.height(Sizes.CONTENT_SPACER_SMALL))
+                Spacer(Modifier.height(Sizes.CONTENT_SPACER_LARGE))
 
                 // Watchlist selector chips
                 WatchlistSelectorChips(
@@ -199,7 +188,7 @@ fun DashboardScreenContent(
                     watchlistChipOnClick(wl)
                 }
 
-//                Spacer(Modifier.height(Sizes.CONTENT_SPACER_SMALL))
+                Spacer(Modifier.height(Sizes.CONTENT_SPACER_SMALL))
 
                 WatchlistDisplay(
                     navigator = navigator,
@@ -212,7 +201,7 @@ fun DashboardScreenContent(
                     }
                 )
 
-                Spacer(Modifier.height(Sizes.CONTENT_SPACER_NORMAL))
+                Spacer(Modifier.height(Sizes.CONTENT_SPACER_SMALL))
 
                 SentinelWatchlistSimple(
                     tickersList = sentinelWatchlist.value!!,

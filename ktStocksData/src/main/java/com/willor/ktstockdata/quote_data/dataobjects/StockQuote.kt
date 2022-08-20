@@ -4,6 +4,9 @@ import java.util.*
 
 data class StockQuote(
     val ticker: String,
+    val changeDollarToday: Double,
+    val changePctToday: Double,
+    val curPrice: Double,
     val prevClose: Double,
     val openPrice: Double,
     val bidPrice: Double,
@@ -20,9 +23,9 @@ data class StockQuote(
     val betaFiveYearMonthly: Double,
     val peRatioTTM: Double,
     val epsTTM: Double,
-    val nextEarningsDate: Date,
+    val nextEarningsDate: Date? = null,
     val forwardDivYieldValue: Double,
     val forwardDivYieldPercentage: Double,
-    val exDividendDate: Date,
+    val exDividendDate: Date? = null,
     val oneYearTargetEstimate: Double,
 )

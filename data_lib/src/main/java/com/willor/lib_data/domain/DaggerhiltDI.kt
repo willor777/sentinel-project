@@ -2,6 +2,7 @@ package com.willor.lib_data.domain
 
 import android.content.Context
 import androidx.room.Room
+import com.willor.lib_data.action.Strategies
 import com.willor.lib_data.data.local.local_db.StockDataDb
 import com.willor.lib_data.data.local.local_preferences.DatastorePrefsManager
 import com.willor.lib_data.data.remote.StockData
@@ -9,7 +10,6 @@ import com.willor.lib_data.domain.abstraction.IRepo
 import com.willor.lib_data.domain.abstraction.IStockData
 import com.willor.lib_data.repo.RepoImpl
 import com.willor.lib_data.utils.DbConstants
-import com.willor.sentinel_bots.bots.DoubleStepBot
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -53,11 +53,9 @@ object DaggerHiltDI {
         return DatastorePrefsManager(context)
     }
 
-
     @Singleton
     @Provides
-    fun provideDoubleStepBot(api: IRepo): DoubleStepBot{
-        return DoubleStepBot(api)
+    fun provideAppContext(): Strategies{
+        return Strategies()
     }
-
 }

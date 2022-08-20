@@ -4,6 +4,9 @@ import java.util.*
 
 data class ETFQuote(
     val ticker: String,
+    val changeDollarToday: Double,
+    val changePctToday: Double,
+    val curPrice: Double,
     val prevClose: Double,
     val openPrice: Double,
     val bidPrice: Double,
@@ -23,6 +26,6 @@ data class ETFQuote(
     val yearToDateTotalReturn: Double,
     val betaFiveYearMonthly: Double,
     val expenseRatioNetPercentage: Double,
-    val inceptionDate: Date,
+    val inceptionDate: Date? = null,
     )
 

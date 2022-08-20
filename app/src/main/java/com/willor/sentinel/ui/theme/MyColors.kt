@@ -4,7 +4,7 @@ import androidx.compose.ui.graphics.Color
 
 object MyColors{
     val GreenColor = Color(0xFF56ff72)
-    val RedColor = Color(0xFFff0084)
+    val RedColor = Color(0xFFff55ad)
     val Orange = Color(0xFFE26944)
 
     val DarkBackground = Color(0xFF1E1D2E)

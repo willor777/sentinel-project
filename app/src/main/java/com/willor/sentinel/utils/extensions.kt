@@ -1,5 +1,9 @@
 package com.willor.sentinel.utils
 
+import java.lang.Exception
+import java.text.SimpleDateFormat
+import java.util.*
+
 
 fun Double.toUSDollarString(): String{
     var strValue = this.toString()
@@ -16,14 +20,17 @@ fun Double.toUSDollarString(): String{
     var centsFormatted = cents.padEnd(2, '0').substring(0,2)
 
     return if (isNegative){
-        "-$dollarFormatted.$centsFormatted"
+        " -$dollarFormatted.$centsFormatted"
     }else{
-        "$dollarFormatted.$centsFormatted"
+        " $dollarFormatted.$centsFormatted"
     }
 }
 
 
 fun Double.toTwoDecimalPlaceString(): String{
+    if (!this.toString().contains(".")){
+        return this.toString()
+    }
     val split = this.toString().split(".")
 
     return if (split[1].length < 3){
@@ -73,10 +80,13 @@ fun Long.toCommaString(): String{
 }
 
 
-fun main() {
+fun Long.toDateString(): String{
 
-    val test = 133_333_333_333_333
-
-    println(test.toCommaString())
+    try{
+        val d = Date(this)
+        return SimpleDateFormat("MM/dd/yy hh:mm aa").format(d)
+    }catch (e: Exception){
+        return "Unknown"
+    }
 
 }

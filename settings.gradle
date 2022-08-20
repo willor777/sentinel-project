@@ -20,4 +20,4 @@ rootProject.name = "Sentinel"
 include ':app'
 include ':data_lib'
 include ':ktStocksData'
-include ':sentinel_bots'
+include ':strategies'

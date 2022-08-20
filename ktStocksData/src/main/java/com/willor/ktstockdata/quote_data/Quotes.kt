@@ -15,6 +15,7 @@ import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 import java.lang.Exception
 import java.text.SimpleDateFormat
+import java.util.*
 
 
 /**
@@ -24,6 +25,24 @@ import java.text.SimpleDateFormat
  */
 @SuppressLint("SimpleDateFormat")           // Warning about "Should use..."
 class Quotes: IQuotes {
+
+
+    /**
+     * Calculates the Change Dollar using CurPrice and PrevClose
+     */
+    private fun calculateChangeDollar(prevClose: Double, curPrice: Double): Double{
+        return curPrice - prevClose
+    }
+
+
+    /**
+     * Calculates the Change Percent using CurPrice and PrevClose
+     */
+    private fun calculateChangePct(prevClose: Double, curPrice: Double): Double{
+        // (( newVal - oldVal ) / oldVal) * 100
+
+        return ((curPrice - prevClose) / prevClose) * 100
+    }
 
 
     /**
@@ -107,41 +126,59 @@ class Quotes: IQuotes {
 
         try{
             val dateFromString = { s: String ->
-                SimpleDateFormat("yyyy-MM-dd").parse(s)
+                val result: Date?
+                if (s.contains("N/A")){
+                    result = null
+                }else{
+                    result = SimpleDateFormat("yyyy-MM-dd").parse(s)
+                }
+                result
             }
 
             val tick = ticker.uppercase()
 
             val scrape = scrapeYfinanceQuoteTable(tick)!!
 
-            // Make sure it's a stock by check for the Beta keyword at index 9 0
+            // Make sure it's an ETF by check for the NAV keyword at index 9 0
             if (!scrape[9][0].contains("NAV")) {
                 return null
             }
 
+            // Calculate values not easily available
+            val prevClose = parseDouble(scrape[0][1])
+
+            val curPrice = // Mark (bid + ask) / 2
+                (parseDouble(scrape[2][1].substringBefore(" x ")) +
+                            parseDouble(scrape[3][1].substringBefore(" x "))) / 2
+
+            val changeDollar = calculateChangeDollar(prevClose, curPrice)
+            val changePct = calculateChangePct(prevClose, curPrice)
 
             return ETFQuote(
-                tick,
-                parseDouble(scrape[0][1]),
-                parseDouble(scrape[1][1]),
-                parseDouble(scrape[2][1].substringBefore(" x ")),
-                parseInt(scrape[2][1].substringAfter(" x ")),
-                parseDouble(scrape[3][1].substringBefore(" x ")),
-                parseInt(scrape[3][1].substringAfter(" x ")),
-                parseDouble(scrape[4][1].substringAfter(" - ")),
-                parseDouble(scrape[4][1].substringBefore(" - ")),
-                parseDouble(scrape[5][1].substringAfter(" - ")),
-                parseDouble(scrape[5][1].substringBefore(" - ")),
-                parseInt(scrape[6][1]),
-                parseInt(scrape[7][1]),
-                parseLongFromBigAbbreviatedNumbers(scrape[8][1]),
-                parseDouble(scrape[9][1]),
-                parseDouble(scrape[10][1]),
-                parseDouble(scrape[11][1].substringBefore("%")),
-                parseDouble(scrape[12][1].substringBefore("%")),
-                parseDouble(scrape[13][1]),
-                parseDouble(scrape[14][1].substringBefore("%")),
-                dateFromString(scrape[15][1])!!
+                ticker = tick,
+                changeDollarToday = changeDollar,
+                changePctToday = changePct,
+                curPrice = curPrice,
+                prevClose = parseDouble(scrape[0][1]),
+                openPrice = parseDouble(scrape[1][1]),
+                bidPrice = parseDouble(scrape[2][1].substringBefore(" x ")),
+                bidSize = parseInt(scrape[2][1].substringAfter(" x ")),
+                askPrice = parseDouble(scrape[3][1].substringBefore(" x ")),
+                askSize = parseInt(scrape[3][1].substringAfter(" x ")),
+                daysRangeHigh = parseDouble(scrape[4][1].substringAfter(" - ")),
+                daysRangeLow = parseDouble(scrape[4][1].substringBefore(" - ")),
+                fiftyTwoWeekRangeHigh = parseDouble(scrape[5][1].substringAfter(" - ")),
+                fiftyTwoWeekRangeLow = parseDouble(scrape[5][1].substringBefore(" - ")),
+                volume = parseInt(scrape[6][1]),
+                avgVolume = parseInt(scrape[7][1]),
+                netAssets = parseLongFromBigAbbreviatedNumbers(scrape[8][1]),
+                nav = parseDouble(scrape[9][1]),
+                peRatioTTM = parseDouble(scrape[10][1]),
+                yieldPercentage = parseDouble(scrape[11][1].substringBefore("%")),
+                yearToDateTotalReturn = parseDouble(scrape[12][1].substringBefore("%")),
+                betaFiveYearMonthly = parseDouble(scrape[13][1]),
+                expenseRatioNetPercentage = parseDouble(scrape[14][1].substringBefore("%")),
+                inceptionDate = dateFromString(scrape[15][1])
             )
         } catch (e: Exception){
             Log.d("EXCEPTION", e.stackTraceToString())
@@ -155,12 +192,19 @@ class Quotes: IQuotes {
      */
     override fun getStockQuote(ticker: String): StockQuote? {
         try{
+
             val dateFromString = { s: String ->
-                var str = s
-                if (s.contains("-")){
-                    str = s.substringBefore("-")
+                var result: Date?
+                if (s.contains("N/A")){
+                    result = null
+                }else{
+                    var str = s
+                    if (s.contains("-")){
+                        str = s.substringBefore("-")
+                    }
+                    result = SimpleDateFormat("MMM dd, yyyy").parse(str)
                 }
-                SimpleDateFormat("MMM dd, yyyy").parse(str)
+                result
             }
 
             val tick = ticker.uppercase()
@@ -172,32 +216,45 @@ class Quotes: IQuotes {
                 return null
             }
 
-            // process values
+            // Mark price (bid + ask) / 2
+            val curPrice = (
+                    parseDouble(scrape[2][1].substringBefore("x")) +
+                            parseDouble(scrape[3][1].substringBefore("x"))
+                    )
+
+            val prevClose = parseDouble(scrape[0][1])
+            val changeDollar = calculateChangeDollar(prevClose, curPrice)
+            val changePct = calculateChangePct(prevClose, curPrice)
+
+            // Build stock Quote
             return StockQuote(
-                tick,
-                parseDouble(scrape[0][1]),
-                parseDouble(scrape[1][1]),
-                parseDouble(scrape[2][1].substringBefore("x")),
-                parseInt(scrape[2][1].substringAfter("x")),
-                parseDouble(scrape[3][1].substringBefore("x")),
-                parseInt(scrape[3][1].substringAfter("x")),
-                parseDouble(scrape[4][1].substringAfter("-")),
-                parseDouble(scrape[4][1].substringBefore("-")),
-                parseDouble(scrape[5][1].substringAfter("-")),
-                parseDouble(scrape[5][1].substringBefore("-")),
-                parseInt(scrape[6][1]),
-                parseInt(scrape[7][1]),
-                parseLongFromBigAbbreviatedNumbers(scrape[8][1]),
-                parseDouble(scrape[9][1]),
-                parseDouble(scrape[10][1]),
-                parseDouble(scrape[11][1]),
-                dateFromString(scrape[12][1])!!,
-                parseDouble(scrape[13][1].substringBefore("(")),
-                parseDouble(
+                ticker = tick,
+                changeDollarToday = changeDollar,
+                changePctToday = changePct,
+                curPrice = curPrice,
+                prevClose = prevClose,
+                openPrice = parseDouble(scrape[1][1]),
+                bidPrice = parseDouble(scrape[2][1].substringBefore("x")),
+                bidSize = parseInt(scrape[2][1].substringAfter("x")),
+                askPrice = parseDouble(scrape[3][1].substringBefore("x")),
+                askSize = parseInt(scrape[3][1].substringAfter("x")),
+                daysRangeHigh = parseDouble(scrape[4][1].substringAfter("-")),
+                daysRangeLow = parseDouble(scrape[4][1].substringBefore("-")),
+                fiftyTwoWeekRangeHigh = parseDouble(scrape[5][1].substringAfter("-")),
+                fiftyTwoWeekRangeLow = parseDouble(scrape[5][1].substringBefore("-")),
+                volume = parseInt(scrape[6][1]),
+                avgVolume = parseInt(scrape[7][1]),
+                marketCap = parseLongFromBigAbbreviatedNumbers(scrape[8][1]),
+                betaFiveYearMonthly = parseDouble(scrape[9][1]),
+                peRatioTTM = parseDouble(scrape[10][1]),
+                epsTTM = parseDouble(scrape[11][1]),
+                nextEarningsDate = dateFromString(scrape[12][1]),
+                forwardDivYieldValue = parseDouble(scrape[13][1].substringBefore("(")),
+                forwardDivYieldPercentage = parseDouble(
                     scrape[13][1].substringAfter("(").substringBefore("%")
                 ),
-                dateFromString(scrape[14][1])!!,
-                parseDouble(scrape[15][1])
+                exDividendDate = dateFromString(scrape[14][1]),
+                oneYearTargetEstimate = parseDouble(scrape[15][1])
             )
         } catch(e: Exception){
             Log.d("EXCEPTION", e.stackTraceToString())
@@ -258,7 +315,8 @@ class Quotes: IQuotes {
                 parseInt(dataActual[11][1])
             )
         }catch (e: Exception){
-            Log.d("EXCEPTION", e.stackTraceToString())
+            Log.d("EXCEPTION", "Ticker $ticker CAUSED AN EXCEPTION. FAILED TO OBTAIN " +
+                    "OPTION STATS\n" + e.stackTraceToString())
             return null
         }
     }

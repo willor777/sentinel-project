@@ -18,7 +18,8 @@ import com.willor.lib_data.utils.DbConstants
     SimpleChartEntity::class,
     SnRLevelsEntity::class,
     StockQuoteEntity::class,
-    WatchlistEntity::class
+    WatchlistEntity::class,
+    TriggerEntity::class,
                ],
     version = DbConstants.DB_VERS,
     exportSchema = false
@@ -34,7 +35,7 @@ abstract class StockDataDb : RoomDatabase(){
 
     abstract fun getMajorIndicesDataDAO(): MajorIndicesDataTableDAO
 
-    abstract fun getOptionStatsTableDAO(): OptionStatsTableDao
+    abstract fun getOptionStatsTableDAO(): OptionStatsTableDAO
 
     abstract fun getSimpleChartTableDAO(): SimpleChartTableDAO
 
@@ -43,4 +44,6 @@ abstract class StockDataDb : RoomDatabase(){
     abstract fun getStockQuoteTableDAO(): StockQuoteTableDAO
 
     abstract fun getWatchlistTableDAO(): WatchlistTableDAO
+
+    abstract fun getTriggerTableDAO(): TriggerTableDAO
 }

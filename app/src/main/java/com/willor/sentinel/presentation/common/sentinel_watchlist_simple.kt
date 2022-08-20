@@ -39,9 +39,9 @@ fun SentinelWatchlistSimple(
         horizontalArrangement = Arrangement.Center){
             Text(
                 text = "Sentinel Watchlist",
-                fontSize = MaterialTheme.typography.headlineSmall.fontSize,
-                fontFamily = MaterialTheme.typography.headlineSmall.fontFamily,
-                fontWeight = MaterialTheme.typography.headlineSmall.fontWeight,
+                fontSize = MaterialTheme.typography.titleMedium.fontSize,
+                fontFamily = MaterialTheme.typography.titleMedium.fontFamily,
+                fontWeight = MaterialTheme.typography.titleMedium.fontWeight,
                 color = Color.White
             )
         }

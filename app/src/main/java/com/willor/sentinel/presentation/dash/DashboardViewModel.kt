@@ -1,8 +1,6 @@
 package com.willor.sentinel.presentation.dash
 
-import android.content.Context
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.willor.ktstockdata.misc_data.dataobjects.MajorFuturesData
@@ -16,13 +14,10 @@ import com.willor.lib_data.data.local.local_preferences.DatastorePrefsManager
 import com.willor.lib_data.utils.printToDEBUGTEMP
 import com.willor.sentinel.utils.periodicCoroutineRepeatOnFailure
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -103,7 +98,7 @@ class DashboardViewModel @Inject constructor(
 
 
     private suspend fun getAppPreferences(){
-        _appPreferences.value = prefsManager.getFromDatastore().first()
+        _appPreferences.value = prefsManager.getAppPreferences().first()
     }
 
 
@@ -117,35 +112,37 @@ class DashboardViewModel @Inject constructor(
     /**
      * Used to load either "Most Active" "Big Gainers" "Big Losers"
      */
-    private fun loadYfWatchlist(wlName: WatchlistOptions? = null): Boolean{
+    private suspend fun loadYfWatchlist(wlName: WatchlistOptions? = null): Boolean{
+
+        // Verify watchlist name
+        val targetWatchlist = if (wlName == null){
+            WatchlistOptions.MOST_ACTIVE
+        } else{
+            wlName
+        }
+
+        // Success flag
         var collected = false
 
-        viewModelScope.launch(Dispatchers.IO){
+        repo.getWatchlist(targetWatchlist).collect{
+            when(it){
+                is Resource.Loading -> {
+                    Log.d("INFO", "Received Loading for getWatchlist()")
+                }
 
-            val targetWatchlist = if (wlName == null){
-                WatchlistOptions.MOST_ACTIVE
-            } else{
-                wlName
-            }
+                is Resource.Success -> {
+                    _watchlistDataFlow.value = it.data
+                    collected = true        // Set flag to true
+                    Log.d("INFO", "Collected watchlist data")
+                }
 
-            repo.getWatchlist(targetWatchlist).collect{
-                when(it){
-                    is Resource.Loading -> {
-                        Log.d("INFO", "Received Loading for getWatchlist()")
-                    }
-
-                    is Resource.Success -> {
-                        _watchlistDataFlow.value = it.data
-                        collected = true
-                        Log.d("INFO", "Collected watchlist data")
-                    }
-
-                    is Resource.Error -> {
-                        Log.d("INFO", "Received Error for getWatchlist()")
-                    }
+                is Resource.Error -> {
+                    Log.d("INFO", "Received Error for getWatchlist()")
                 }
             }
         }
+
+        // Signal success / failure
         return collected
     }
 
@@ -205,6 +202,7 @@ class DashboardViewModel @Inject constructor(
     }
 
     fun removeTickerFromSentinelWatchlist(ticker: String){
+
         viewModelScope.launch(Dispatchers.IO) {
             val curSettings = prefsManager.getSentinelSettings().first()
             if (curSettings.currentWatchlist.contains(ticker)){
@@ -213,6 +211,22 @@ class DashboardViewModel @Inject constructor(
                 _curSentinelWatchlist.value = curSettings.currentWatchlist
             }
         }
+    }
+
+
+    /**
+     * Cancels the updaters and end them
+     */
+    override fun onCleared() {
+        MainScope().launch(Dispatchers.IO){
+            if (futuresUpdater.isActive){
+                futuresUpdater.cancelAndJoin()
+            }
+            if (watchlistUpdater.isActive){
+                watchlistUpdater.cancelAndJoin()
+            }
+        }
+        super.onCleared()
     }
 }
 

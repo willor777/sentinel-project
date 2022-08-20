@@ -13,7 +13,7 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/data_lib" />
             <option value="$PROJECT_DIR$/ktStocksData" />
-            <option value="$PROJECT_DIR$/sentinel_bots" />
+            <option value="$PROJECT_DIR$/strategies" />
           </set>
         </option>
       </GradleProjectSettings>

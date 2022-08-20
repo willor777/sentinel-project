@@ -10,7 +10,8 @@ import java.util.*
 
 fun StockQuote.toStockQuoteEntity(): StockQuoteEntity{
     return StockQuoteEntity(
-        ticker, System.currentTimeMillis(), prevClose, openPrice, bidPrice, bidSize, askPrice,
+        ticker, System.currentTimeMillis(), changeDollarToday, changePctToday, curPrice,
+        prevClose, openPrice, bidPrice, bidSize, askPrice,
         askSize, daysRangeHigh, daysRangeLow, fiftyTwoWeekRangeHigh, fiftyTwoWeekRangeLow, volume,
         avgVolume, marketCap, betaFiveYearMonthly, peRatioTTM, epsTTM, nextEarningsDate, 
         forwardDivYieldValue, forwardDivYieldPercentage, exDividendDate, oneYearTargetEstimate
@@ -20,10 +21,11 @@ fun StockQuote.toStockQuoteEntity(): StockQuoteEntity{
 
 fun StockQuoteEntity.toStockQuote(): StockQuote{
     return StockQuote(
-        ticker, prevClose!!, openPrice!!, bidPrice!!, bidSize!!, askPrice!!, askSize!!, daysRangeHigh!!, 
+        ticker, changeDollarToday!!, changePctToday!!, curPrice!!,
+        prevClose!!, openPrice!!, bidPrice!!, bidSize!!, askPrice!!, askSize!!, daysRangeHigh!!,
         daysRangeLow!!, fiftyTwoWeekRangeHigh!!, fiftyTwoWeekRangeLow!!, volume!!, avgVolume!!, marketCap!!, 
-        betaFiveYearMonthly!!, peRatioTTM!!, epsTTM!!, nextEarningsDate!!, forwardDivYieldValue!!, 
-        forwardDivYieldPercentage!!, exDividendDate!!, oneYearTargetEstimate!!,
+        betaFiveYearMonthly!!, peRatioTTM!!, epsTTM!!, nextEarningsDate, forwardDivYieldValue!!,
+        forwardDivYieldPercentage!!, exDividendDate, oneYearTargetEstimate!!,
     )
 }
 
@@ -32,6 +34,11 @@ fun StockQuoteEntity.toStockQuote(): StockQuote{
 data class StockQuoteEntity(
     @PrimaryKey val ticker: String = "",
     @ColumnInfo val timeSaved: Long = System.currentTimeMillis(),
+
+    @ColumnInfo val changeDollarToday: Double? = null,
+    @ColumnInfo val changePctToday: Double? = null,
+    @ColumnInfo val curPrice: Double? = null,
+    
     @ColumnInfo val prevClose: Double? = null,
     @ColumnInfo val openPrice: Double? = null,
     @ColumnInfo val bidPrice: Double? = null,

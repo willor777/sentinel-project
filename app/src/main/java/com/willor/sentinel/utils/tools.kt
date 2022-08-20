@@ -20,7 +20,6 @@ fun periodicCoroutine(
     delayTime: Long,
     scope: CoroutineScope,
     dispatcher: CoroutineDispatcher,
-    repeatOnFailure: Boolean = true,
     task: suspend () -> Unit
 ): Job {
     return scope.launch(dispatcher){
