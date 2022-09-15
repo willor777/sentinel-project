@@ -3,22 +3,22 @@ package com.willor.sentinel.utils.services
 import android.app.*
 import android.content.Context
 import android.content.Intent
-import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import com.willor.ktstockdata.historical_data.charts.advancedchart.AdvancedStockChart
+import com.willor.ktstockdata.historicchartdata.charts.advancedchart.AdvancedStockChart
 import com.willor.lib_data.action.Strategies
-import com.willor.lib_data.data.local.local_preferences.DatastorePrefsManager
-import com.willor.lib_data.data.local.local_preferences.SentinelSettings
+import com.willor.lib_data.data.local.preferences.DatastorePrefsManager
+import com.willor.lib_data.data.local.preferences.SentinelSettings
 import com.willor.lib_data.domain.abstraction.IRepo
 import com.willor.lib_data.domain.abstraction.Resource
 import com.willor.sentinel.MainActivity
 import com.willor.sentinel.R
-import com.willor.sentinel_bots.domain.models.TriggerBase
+import com.willor.sentinelscanners.domain.models.TriggerBase
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
@@ -26,19 +26,16 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class SentinelScannerService: Service() {
 
-    private val locTAG = "SentinelScannerService()"
+    private val locTAG = SentinelScannerService::class.java.name
 
     @Inject lateinit var prefs: DatastorePrefsManager
 
     @Inject lateinit var repo: IRepo
 
-    private val myBinder = SentinelScannerBinder()
-
     private lateinit var scannerCoroutine: Job
 
     private val notificationText = "Sentinel Scanner Running...Tap to stop."
 
-    private var scannerIsRunning = false
 
 
     /*------------------------------------ Methods Start Here ------------------------------------*/
@@ -108,7 +105,7 @@ class SentinelScannerService: Service() {
         scannerCoroutine = MainScope().launch(Dispatchers.IO){
 
             // Checks the scannerIsRunning each time
-            while (scannerIsRunning){
+            while (isRunning.value){
                 Log.d("INFO", "$locTAG.startScanner() Scanner Coroutine Starting Scan")
 
                 // Re-collect sentinel settings (watchlist, scanInterval, etc)
@@ -229,39 +226,26 @@ class SentinelScannerService: Service() {
             // Check if coroutine is active, if so, shut down
             if (coroutineIsInitialized){
                 if (scannerCoroutine.isActive){
-                    scannerIsRunning = false
                     scannerCoroutine.cancel()
+                    Log.d("INFO", "$locTAG.stopScannerCoroutine() Has canceled" +
+                            " the scanner coroutine")
                 }
             }
         }
     }
 
 
-    private fun shutDownService(){
-        stopSelf()
-    }
-
-
     /*----------------------------------- Overrides Start Here -----------------------------------*/
 
 
-    override fun onBind(intent: Intent?): IBinder {
-        return myBinder
-    }
-
-
-    override fun stopService(name: Intent?): Boolean {
-        Log.d("INFO", "$locTAG.stopService() called")
-        scannerIsRunning = false
-        stopScannerCoroutine()
-        return super.stopService(name)
-    }
+    // Just return null since there is no need for the binding
+    override fun onBind(intent: Intent?): IBinder? = null
 
 
     override fun onDestroy() {
         Log.d("INFO", "$locTAG.onDestroy() called")
 
-        scannerIsRunning = false
+        isRunning.value = false
         stopScannerCoroutine()
         super.onDestroy()
     }
@@ -269,16 +253,18 @@ class SentinelScannerService: Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
-        Log.d("INFO", "SentinelScannerService() onStartCommand() Called")
+        Log.d("INFO", "${locTAG}.onStartCommand() Called")
 
         // Set flag showing the service is running and start scanner
-        if (!scannerIsRunning){
+        if (!isRunning.value){
+
+            Log.d("INFO", "${locTAG}.onStartCommand() -> Started scanner")
 
             // Create channel and notification and startForeground
             createNotificationChannel()
             startForeground(SCANNER_NOTIFICATION_ID_NUMBER, buildStartUpNotification())
 
-            scannerIsRunning = true
+            isRunning.value = true
             startScanner()
         }
 
@@ -289,19 +275,30 @@ class SentinelScannerService: Service() {
     /*---------------------------------- Other Stuff Start Here ----------------------------------*/
 
 
-    inner class SentinelScannerBinder: Binder(){
-
-        fun getService(): SentinelScannerService{
-            return this@SentinelScannerService
-        }
-
-    }
-
-
     companion object{
         const val SCANNER_NOTIFICATION_CHANNEL_NAME = "SENTINEL_SCANNER_NOTIFICATION_CHANNEL"
         const val SCANNER_NOTIFICATION_CHANNEL_ID = "SENTINEL_SCANNER_CHANNEL"
         const val SCANNER_NOTIFICATION_ID_NUMBER = 69
+
+        // State for service is running or not. Also responsible for stopping scanner loop
+        var isRunning = MutableStateFlow(false)
     }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

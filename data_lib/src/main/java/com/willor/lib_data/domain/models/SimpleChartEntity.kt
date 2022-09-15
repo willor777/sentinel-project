@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.Gson
-import com.willor.ktstockdata.historical_data.charts.simplechart.SimpleStockChart
+import com.willor.ktstockdata.historicchartdata.charts.simplechart.SimpleStockChart
 import com.willor.lib_data.utils.DbConstants
 
 

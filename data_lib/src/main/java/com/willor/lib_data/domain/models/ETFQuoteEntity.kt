@@ -3,25 +3,29 @@ package com.willor.lib_data.domain.models
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.willor.ktstockdata.quote_data.dataobjects.ETFQuote
+import com.willor.ktstockdata.marketdata.dataobjects.EtfQuote
 import com.willor.lib_data.utils.DbConstants
 import java.util.*
 
-fun ETFQuoteEntity.toETFQuote(): ETFQuote{
-    return ETFQuote(
-        this.ticker!!, this.changeDollarToday!!, this.changePctToday!!, this.curPrice!!,
+fun ETFQuoteEntity.toETFQuote(): EtfQuote {
+    return EtfQuote(
+        this.ticker, this.changeDollarToday!!, this.changePctToday!!, this.curPrice!!,
         this.prevClose!!, this.openPrice!!, this.bidPrice!!, this.bidSize!!, this.askPrice!!,
         this.askSize!!, this.daysRangeHigh!!, this.daysRangeLow!!, this.fiftyTwoWeekRangeHigh!!,
         this.fiftyTwoWeekRangeLow!!, this.volume!!, this.avgVolume!!, this.netAssets!!, this.nav!!,
         this.peRatioTTM!!, this.yieldPercentage!!, this.yearToDateTotalReturn!!, this.betaFiveYearMonthly!!,
-        this.expenseRatioNetPercentage!!, this.inceptionDate
+        this.expenseRatioNetPercentage!!, this.inceptionDate,
+        prepostPrice = this.prepostPrice!!,
+        prepostChangeDollar = this.prepostChangeDollar!!,
+        prepostChangePct = this.prepostChangePct!!,
+        netAssetsAbbreviatedString = this.netAssetsAbbreviatedString!!
     )
 }
 
-fun ETFQuote.toETFQuoteEntity(): ETFQuoteEntity{
+fun EtfQuote.toETFQuoteEntity(): ETFQuoteEntity{
     return ETFQuoteEntity(
-        ticker = ticker, changeDollarToday = changeDollarToday,
-        changePctToday = changePctToday, curPrice = curPrice, prevClose = prevClose,
+        ticker = ticker, changeDollarToday = changeDollarRegMarket,
+        changePctToday = changePctRegMarket, curPrice = lastPriceRegMarket, prevClose = prevClose,
         openPrice = openPrice, bidPrice = bidPrice,
         bidSize = bidSize, askPrice = askPrice, askSize = askSize, daysRangeHigh = daysRangeHigh,
         daysRangeLow = daysRangeLow, fiftyTwoWeekRangeHigh = fiftyTwoWeekRangeHigh,
@@ -30,7 +34,9 @@ fun ETFQuote.toETFQuoteEntity(): ETFQuoteEntity{
         yieldPercentage = yieldPercentage, yearToDateTotalReturn = yearToDateTotalReturn,
         betaFiveYearMonthly = betaFiveYearMonthly,
         expenseRatioNetPercentage = expenseRatioNetPercentage,
-        inceptionDate = inceptionDate
+        inceptionDate = inceptionDate, prepostPrice = prepostPrice,
+        prepostChangeDollar = prepostChangeDollar, prepostChangePct = prepostChangePct,
+        netAssetsAbbreviatedString = netAssetsAbbreviatedString
     )
 }
 
@@ -61,4 +67,8 @@ data class ETFQuoteEntity(
     @ColumnInfo val betaFiveYearMonthly: Double? = null,
     @ColumnInfo val expenseRatioNetPercentage: Double? = null,
     @ColumnInfo val inceptionDate: Date? = null,
-)
+    @ColumnInfo val prepostPrice: Double? = null,
+    @ColumnInfo val prepostChangeDollar: Double? = null,
+    @ColumnInfo val prepostChangePct: Double? = null,
+    @ColumnInfo val netAssetsAbbreviatedString: String? = null,
+    )

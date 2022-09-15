@@ -12,20 +12,20 @@ val fontFamily = FontFamily.SansSerif
 val Typography = Typography(
     bodySmall = TextStyle(
         fontFamily = FontFamily.SansSerif,
-        fontSize = 12.sp,
+        fontSize = 9.sp,
         lineHeight = 16.sp,
         letterSpacing = 0.5.sp
     ),
     bodyMedium = TextStyle(
         fontFamily = fontFamily,
-        fontSize = 16.sp,
+        fontSize = 14.sp,
         lineHeight = 20.sp,
         letterSpacing = 0.5.sp
     ),
     bodyLarge = TextStyle(
         fontFamily = fontFamily,
         fontWeight = FontWeight.Normal,
-        fontSize = 22.sp,
+        fontSize = 20.sp,
         lineHeight = 26.sp,
         letterSpacing = 0.5.sp,
     ),

@@ -1,6 +1,6 @@
 package com.willor.lib_data.action
 
-import com.willor.sentinel_bots.bots.TestStrategy
+import com.willor.sentinelscanners.bots.TestStrategy
 
 class Strategies {
     val testStrategy = TestStrategy()

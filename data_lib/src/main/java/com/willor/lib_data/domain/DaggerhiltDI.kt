@@ -3,8 +3,8 @@ package com.willor.lib_data.domain
 import android.content.Context
 import androidx.room.Room
 import com.willor.lib_data.action.Strategies
-import com.willor.lib_data.data.local.local_db.StockDataDb
-import com.willor.lib_data.data.local.local_preferences.DatastorePrefsManager
+import com.willor.lib_data.data.local.db.StockDataDb
+import com.willor.lib_data.data.local.preferences.DatastorePrefsManager
 import com.willor.lib_data.data.remote.StockData
 import com.willor.lib_data.domain.abstraction.IRepo
 import com.willor.lib_data.domain.abstraction.IStockData

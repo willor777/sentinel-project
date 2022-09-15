@@ -1,11 +1,10 @@
 package com.willor.sentinel.utils
 
-import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 
 
-fun Double.toUSDollarString(): String{
+fun Double.toTwoDecimalPlacesString(): String{
     var strValue = this.toString()
 
     var isNegative = false
@@ -89,4 +88,9 @@ fun Long.toDateString(): String{
         return "Unknown"
     }
 
+}
+
+
+fun Date.formatToMMDDYYYYString(): String{
+    return SimpleDateFormat("MM/DD/YYYY").format(this)
 }

@@ -3,15 +3,14 @@ package com.willor.sentinel.presentation.dash
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.willor.ktstockdata.misc_data.dataobjects.MajorFuturesData
-import com.willor.ktstockdata.watchlists_data.WatchlistOptions
-import com.willor.ktstockdata.watchlists_data.dataobjects.Watchlist
-import com.willor.lib_data.domain.abstraction.Resource
+import com.willor.ktstockdata.marketdata.dataobjects.MajorFuturesData
+import com.willor.ktstockdata.watchlistsdata.WatchlistOptions
+import com.willor.ktstockdata.watchlistsdata.dataobjects.Watchlist
+import com.willor.lib_data.data.local.preferences.AppPreferences
+import com.willor.lib_data.data.local.preferences.DatastorePrefsManager
 import com.willor.lib_data.domain.abstraction.IRepo
+import com.willor.lib_data.domain.abstraction.Resource
 import com.willor.lib_data.utils.handleErrorsToLog
-import com.willor.lib_data.data.local.local_preferences.AppPreferences
-import com.willor.lib_data.data.local.local_preferences.DatastorePrefsManager
-import com.willor.lib_data.utils.printToDEBUGTEMP
 import com.willor.sentinel.utils.periodicCoroutineRepeatOnFailure
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
@@ -20,12 +19,15 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
+
+
 @HiltViewModel
 class DashboardViewModel @Inject constructor(
     private val repo: IRepo,
     private val prefsManager: DatastorePrefsManager
 ): ViewModel(){
 
+    private val locTAG = DashboardViewModel::class.java.name
 
     private var _appPreferences = MutableStateFlow<AppPreferences?>(null)
     val appPreferences get() = _appPreferences.asStateFlow()
@@ -62,7 +64,6 @@ class DashboardViewModel @Inject constructor(
 
         viewModelScope.launch(Dispatchers.IO){
             getAppPreferences()
-            printToDEBUGTEMP("Loaded Preferences" + appPreferences.value.toString())
         }
 
         loadSentinelWatchlist()
@@ -169,7 +170,7 @@ class DashboardViewModel @Inject constructor(
     }
 
 
-    fun loadSentinelWatchlist(){
+    private fun loadSentinelWatchlist(){
         viewModelScope.launch(Dispatchers.IO){
             val curSettings = prefsManager.getSentinelSettings().first()
             _curSentinelWatchlist.value = curSettings.currentWatchlist
@@ -201,6 +202,7 @@ class DashboardViewModel @Inject constructor(
 
     }
 
+
     fun removeTickerFromSentinelWatchlist(ticker: String){
 
         viewModelScope.launch(Dispatchers.IO) {
@@ -218,6 +220,7 @@ class DashboardViewModel @Inject constructor(
      * Cancels the updaters and end them
      */
     override fun onCleared() {
+        Log.d("INFO", "$locTAG.onCleared() Called. Shutting of updaters")
         MainScope().launch(Dispatchers.IO){
             if (futuresUpdater.isActive){
                 futuresUpdater.cancelAndJoin()
@@ -228,6 +231,7 @@ class DashboardViewModel @Inject constructor(
         }
         super.onCleared()
     }
+
 }
 
 
