@@ -4,11 +4,11 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.Gson
-import com.willor.ktstockdata.historical_data.charts.advancedchart.AdvancedStockChart
+import com.willor.ktstockdata.historicchartdata.charts.advancedchart.AdvancedStockChart
 import com.willor.lib_data.utils.DbConstants
 
 
-fun AdvChartEntity.toAdvancedStockChart(): AdvancedStockChart{
+fun AdvChartEntity.toAdvancedStockChart(): AdvancedStockChart {
     return Gson().fromJson(data!!, AdvancedStockChart::class.java)
 }
 

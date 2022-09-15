@@ -1,15 +1,10 @@
 package com.willor.lib_data.domain.abstraction
 
-import com.willor.ktstockdata.historical_data.charts.advancedchart.AdvancedStockChart
-import com.willor.ktstockdata.historical_data.charts.simplechart.SimpleStockChart
-import com.willor.ktstockdata.misc_data.dataobjects.MajorFuturesData
-import com.willor.ktstockdata.misc_data.dataobjects.MajorIndicesData
-import com.willor.ktstockdata.misc_data.dataobjects.SnRLevels
-import com.willor.ktstockdata.quote_data.dataobjects.ETFQuote
-import com.willor.ktstockdata.quote_data.dataobjects.OptionStats
-import com.willor.ktstockdata.quote_data.dataobjects.StockQuote
-import com.willor.ktstockdata.watchlists_data.WatchlistOptions
-import com.willor.ktstockdata.watchlists_data.dataobjects.Watchlist
+import com.willor.ktstockdata.historicchartdata.charts.advancedchart.AdvancedStockChart
+import com.willor.ktstockdata.historicchartdata.charts.simplechart.SimpleStockChart
+import com.willor.ktstockdata.marketdata.dataobjects.*
+import com.willor.ktstockdata.watchlistsdata.WatchlistOptions
+import com.willor.ktstockdata.watchlistsdata.dataobjects.Watchlist
 
 
 // TODO Add Watch lists
@@ -17,7 +12,7 @@ interface IStockData {
 
     fun getStockQuote(ticker: String): StockQuote?
 
-    fun getEtfQuote(ticker: String): ETFQuote?
+    fun getEtfQuote(ticker: String): EtfQuote?
 
     fun getOptionStats(ticker: String): OptionStats?
 

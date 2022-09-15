@@ -3,29 +3,34 @@ package com.willor.lib_data.domain.models
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.willor.ktstockdata.quote_data.dataobjects.StockQuote
+import com.willor.ktstockdata.marketdata.dataobjects.StockQuote
 import com.willor.lib_data.utils.DbConstants
 import java.util.*
 
 
 fun StockQuote.toStockQuoteEntity(): StockQuoteEntity{
     return StockQuoteEntity(
-        ticker, System.currentTimeMillis(), changeDollarToday, changePctToday, curPrice,
+        ticker, System.currentTimeMillis(), changeDollarRegMarket, changePctRegMarket, lastPriceRegMarket,
         prevClose, openPrice, bidPrice, bidSize, askPrice,
         askSize, daysRangeHigh, daysRangeLow, fiftyTwoWeekRangeHigh, fiftyTwoWeekRangeLow, volume,
         avgVolume, marketCap, betaFiveYearMonthly, peRatioTTM, epsTTM, nextEarningsDate, 
-        forwardDivYieldValue, forwardDivYieldPercentage, exDividendDate, oneYearTargetEstimate
+        forwardDivYieldValue, forwardDivYieldPercentage, exDividendDate, oneYearTargetEstimate,
+        prepostPrice, prepostChangeDollar, prepostChangePct, marketCapAbbreviatedString
     )
 }
 
 
-fun StockQuoteEntity.toStockQuote(): StockQuote{
+fun StockQuoteEntity.toStockQuote(): StockQuote {
     return StockQuote(
         ticker, changeDollarToday!!, changePctToday!!, curPrice!!,
         prevClose!!, openPrice!!, bidPrice!!, bidSize!!, askPrice!!, askSize!!, daysRangeHigh!!,
         daysRangeLow!!, fiftyTwoWeekRangeHigh!!, fiftyTwoWeekRangeLow!!, volume!!, avgVolume!!, marketCap!!, 
         betaFiveYearMonthly!!, peRatioTTM!!, epsTTM!!, nextEarningsDate, forwardDivYieldValue!!,
         forwardDivYieldPercentage!!, exDividendDate, oneYearTargetEstimate!!,
+        prepostPrice = prepostPrice!!,
+        prepostChangeDollar = prepostChangeDollar!!,
+        prepostChangePct = prepostChangePct!!,
+        marketCapAbbreviatedString = marketCapAbbreviatedString!!
     )
 }
 
@@ -60,4 +65,9 @@ data class StockQuoteEntity(
     @ColumnInfo val forwardDivYieldPercentage: Double? = null,
     @ColumnInfo val exDividendDate: Date? = null,
     @ColumnInfo val oneYearTargetEstimate: Double? = null,
-)
+    @ColumnInfo val prepostPrice: Double? = null,
+    @ColumnInfo val prepostChangeDollar: Double? = null,
+    @ColumnInfo val prepostChangePct: Double? = null,
+    @ColumnInfo val marketCapAbbreviatedString: String? = null,
+
+    )

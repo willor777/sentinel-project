@@ -1,73 +1,58 @@
 package com.willor.lib_data.data.remote
 
-import com.willor.ktstockdata.historical_data.History
-import com.willor.ktstockdata.historical_data.charts.advancedchart.AdvancedStockChart
-import com.willor.ktstockdata.historical_data.charts.simplechart.SimpleStockChart
-import com.willor.ktstockdata.misc_data.MiscData
-import com.willor.ktstockdata.misc_data.dataobjects.MajorFuturesData
-import com.willor.ktstockdata.misc_data.dataobjects.MajorIndicesData
-import com.willor.ktstockdata.misc_data.dataobjects.SnRLevels
-import com.willor.ktstockdata.quote_data.Quotes
-import com.willor.ktstockdata.quote_data.dataobjects.ETFQuote
-import com.willor.ktstockdata.quote_data.dataobjects.OptionStats
-import com.willor.ktstockdata.quote_data.dataobjects.StockQuote
-import com.willor.ktstockdata.watchlists_data.WatchlistOptions
-import com.willor.ktstockdata.watchlists_data.Watchlists
-import com.willor.ktstockdata.watchlists_data.dataobjects.Watchlist
+import com.willor.ktstockdata.KtStocks
+import com.willor.ktstockdata.historicchartdata.charts.advancedchart.AdvancedStockChart
+import com.willor.ktstockdata.historicchartdata.charts.simplechart.SimpleStockChart
+import com.willor.ktstockdata.marketdata.MarketData
+import com.willor.ktstockdata.marketdata.dataobjects.*
+import com.willor.ktstockdata.watchlistsdata.WatchlistOptions
+import com.willor.ktstockdata.watchlistsdata.dataobjects.Watchlist
 import com.willor.lib_data.domain.abstraction.IStockData
 
 
 class StockData: IStockData {
 
-    private val quotesApi by lazy{
-        Quotes()
-    }
+    private val ktstocks = KtStocks()
 
-    private val historyApi by lazy{
-        History()
-    }
+    private val marketDataApi = ktstocks.marketData
 
-    private val miscDataApi by lazy{
-        MiscData()
-    }
+    private val historyApi = ktstocks.historicChartData
 
-    private val watchlistApi by lazy{
-        Watchlists()
-    }
+    private val watchlistApi = ktstocks.watchlistData
 
 
     override fun getStockQuote(ticker: String): StockQuote?{
-        return quotesApi.getStockQuote(ticker)
+        return marketDataApi.getStockQuote(ticker)
     }
 
 
-    override fun getEtfQuote(ticker: String): ETFQuote? {
-        return quotesApi.getETFQuote(ticker)
+    override fun getEtfQuote(ticker: String): EtfQuote? {
+        return marketDataApi.getETFQuote(ticker)
     }
 
 
     override fun getOptionStats(ticker: String): OptionStats? {
-        return quotesApi.getOptionStats(ticker)
+        return marketDataApi.getOptionStats(ticker)
     }
 
 
     override fun getFuturesData(): MajorFuturesData? {
-        return miscDataApi.getFuturesData()
+        return marketDataApi.getFuturesData()
     }
 
 
     override fun getMajorIndicesData(): MajorIndicesData? {
-        return miscDataApi.getMajorIndicesData()
+        return marketDataApi.getMajorIndicesData()
     }
 
 
     override fun getSupportAndResistance(ticker: String): SnRLevels? {
-        return miscDataApi.getSupportAndResistanceFromBarchartDotCom(ticker)
+        return marketDataApi.getSupportAndResistanceFromBarchartDotCom(ticker)
     }
 
 
     override fun getWatchlist(w: WatchlistOptions): Watchlist? {
-        return watchlistApi.getWatchlist(w)
+        return watchlistApi.getWatchlistByWatchlistOption(w)
     }
 
 

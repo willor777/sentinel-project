@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.Gson
-import com.willor.ktstockdata.misc_data.dataobjects.MajorFuturesData
+import com.willor.ktstockdata.marketdata.dataobjects.MajorFuturesData
 import com.willor.lib_data.utils.DbConstants
 
 

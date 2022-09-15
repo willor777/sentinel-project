@@ -3,7 +3,7 @@ package com.willor.lib_data.domain.models
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.willor.ktstockdata.misc_data.dataobjects.SnRLevels
+import com.willor.ktstockdata.marketdata.dataobjects.SnRLevels
 import com.willor.lib_data.utils.DbConstants
 
 
@@ -15,7 +15,7 @@ fun SnRLevels.toSnRLevelsEntity():SnRLevelsEntity{
 }
 
 
-fun SnRLevelsEntity.toSnRLevels(): SnRLevels{
+fun SnRLevelsEntity.toSnRLevels(): SnRLevels {
     return SnRLevels(
         ticker, r3!!, r2!!, r1!!, approxPrice!!, s1!!, s2!!, s3!!, fiftyTwoWeekHigh!!, fibonacci62Pct!!, 
         fibonacci50Pct!!, fibonacci38Pct!!, fiftyTwoWeekLow!!,

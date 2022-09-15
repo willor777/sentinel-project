@@ -1,8 +1,12 @@
 package com.willor.sentinel.utils
 
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.willor.sentinel.ui.theme.MyColors
 import kotlinx.coroutines.*
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 /**
@@ -23,7 +27,7 @@ fun periodicCoroutine(
     task: suspend () -> Unit
 ): Job {
     return scope.launch(dispatcher){
-        while(true){
+        while(this.isActive){
             task()
             delay(delayTime)
         }
@@ -53,31 +57,59 @@ fun periodicCoroutineRepeatOnFailure(
     task: suspend () -> Boolean
 ): Job {
     return scope.launch(dispatcher){
-        while(true){
-            var success = task()
+        while(this.isActive){
+            val success = task()
+
+            // If task failed, delay only 2s
             if (!success){
-                task()
+                delay(2000)
             }
-            delay(delayTime)
+
+            // Delay for full time
+            else{
+                delay(delayTime)
+            }
         }
     }
 }
 
+
+/**
+ * Returns the Defined Green (pos) or Red (neg) color for the given value
+ */
+@Composable
 fun determineColorForPosOrNegValue(value: Double): Color {
     return when{
         value < 0.0 ->{
-            MyColors.RedColor
+            MyColors.LossLightMode
         }
 
         value > 0.0 ->{
-            MyColors.GreenColor
+            MyColors.GainLightMode
         }
 
         else ->{
-            Color.White
+            MaterialTheme.colorScheme.onTertiary
         }
     }
 }
+
+
+@Composable
+fun determineColorForPutCallRatio(value: Double): Color{
+    return when {
+        value > 1.15 -> {
+            MyColors.LossLightMode
+        }
+        value < 0.7 -> {
+            MyColors.GainLightMode
+        }
+        else -> {
+            MaterialTheme.colorScheme.onTertiary
+        }
+    }
+}
+
 
 /**
  * Returns a string in the format...
@@ -89,9 +121,37 @@ fun determineColorForPosOrNegValue(value: Double): Color {
 fun buildChangeDollarChangePercentDisplayString(dollarChange: Double, pctChange: Double): String{
 
     return if (dollarChange > 0){
-        "$ +${dollarChange.toUSDollarString()} (% +${pctChange.toUSDollarString()})"
+        "$ +${dollarChange.toTwoDecimalPlacesString()} (% +${pctChange.toTwoDecimalPlacesString()})"
     }else{
-        "$ ${dollarChange.toUSDollarString()} (%${pctChange.toUSDollarString()})"
+        "$ ${dollarChange.toTwoDecimalPlacesString()} (%${pctChange.toTwoDecimalPlacesString()})"
 
     }
 }
+
+
+/**
+ * Determines the ratio of two Int and rounds off to 2 decimal places
+ */
+fun getRatio(valOne: Int, valTwo: Int): String{
+    return (valOne.toDouble() / valTwo.toDouble()).toTwoDecimalPlaceString()
+}
+
+
+/**
+ * Returns Date formatted to MM/DD/YYYY String... Example: 01/04/1999
+ */
+fun formatDateToMMDDYYYYString(date: Date?): String{
+    if (date == null){return "N/A"}
+
+    return SimpleDateFormat("MM/dd/YYYY").format(date)
+}
+
+
+
+
+
+
+
+
+
+

@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.Gson
-import com.willor.ktstockdata.watchlists_data.dataobjects.Watchlist
+import com.willor.ktstockdata.watchlistsdata.dataobjects.Watchlist
 import com.willor.lib_data.utils.DbConstants
 
 

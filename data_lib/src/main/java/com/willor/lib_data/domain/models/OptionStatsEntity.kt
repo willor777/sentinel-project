@@ -3,7 +3,7 @@ package com.willor.lib_data.domain.models
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.willor.ktstockdata.quote_data.dataobjects.OptionStats
+import com.willor.ktstockdata.marketdata.dataobjects.OptionStats
 import com.willor.lib_data.utils.DbConstants
 import java.util.*
 

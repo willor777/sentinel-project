@@ -18,11 +18,12 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
+    private val locTAG = MainActivity::class.java.name
+
     private lateinit var datastore: DataStore<Preferences>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
 
         setContent {
             SentinelTheme {

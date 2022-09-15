@@ -4,8 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.willor.lib_data.utils.DbConstants
-import com.willor.sentinel_bots.domain.models.TriggerBase
-import java.util.*
+import com.willor.sentinelscanners.domain.models.TriggerBase
 
 
 fun TriggerBase.toTriggerEntity(): TriggerEntity{

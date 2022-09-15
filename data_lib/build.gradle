@@ -63,7 +63,14 @@ dependencies {
     // Datastore preferences
     implementation "androidx.datastore:datastore-preferences:1.0.0"
 
-    // Stock Data
-    implementation project(":ktStocksData")
+
+    // CSV reader
+    implementation 'com.opencsv:opencsv:4.6'
+
+    // My Stuff
+//    implementation project(":ktStocksData")
     implementation project(':strategies')
+
+    implementation( 'com.github.willor777:ktstocks-project:0.0.6-alpha' )
+
 }

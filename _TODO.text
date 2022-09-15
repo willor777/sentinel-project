@@ -1,0 +1,30 @@
+- Each strategy should be built with specific Chart Time frame parameters.
+    - Include this in the description
+    - Add it to each strategy as well
+    - Strategies should have a corresponding ENUM that represents that strategy.
+    - The enum name will be saved as the SentinelSettings.currentScanAlgo field
+    - The SentinelScannerService can use that name to pull up the strategy
+    - Again the strategy itself will have a field specifying what charts it needs including
+    interval and period. This should of course be added to the strategy description
+    - Exp...
+        - Strategy_A uses 7day-5m + 90day-15m charts.
+
+
+
+- Side note...
+    There needs to be some type of screen that allows the user to browse strategies and view their
+    particulars ie: chart types, intervals, stress on the Android System
+
+
+
+
+- On each screen you should show whether or not the Service is running...
+ Either below the TopAppBar or Above the BottomAppBar or maybe even an Icon on one of the bars.
+    - Idea... You can create an Static class that houses a MutableStateFlow(true/false). That way
+    it can be observed and anytime it changes it will update automatically
+        - You can even just put it in the SentinelScannerService's companion object
+
+
+
+- Fix the coroutines so when the screen changes the viewmodel stops the coroutine workers. Right now
+    the DashboardViewModel workers are still active even after the Quote screen has loaded.
