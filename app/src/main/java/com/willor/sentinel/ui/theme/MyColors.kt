@@ -16,10 +16,9 @@ object MyColors{
 
     val LightBackground = Color(0xFFffffff)
     val LightPrimary = Color(0xFF006644)
-    val LightSecondary = Color(0xff3366ff)
+    val LightSecondary = Color(0xff3B4354)
     val LightTertiary = Color(0xFFf2f2f2)
 
 }
 
 //val LightSecondary = Color(0xFF2156DB)
-

@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
+@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
 
 package com.willor.sentinel.presentation.dash
 
@@ -20,8 +20,8 @@ import com.willor.sentinel.presentation.common.SentinelWatchlistLazyRow
 import com.willor.sentinel.presentation.common.WatchlistLazyCol
 import com.willor.sentinel.presentation.dash.components.*
 import com.willor.sentinel.presentation.destinations.QuoteScreenDestination
-import com.willor.sentinel.presentation.destinations.QuoteScreenV2Destination
 import com.willor.sentinel.presentation.destinations.SentinelActiveScreenDestination
+import com.willor.sentinel.presentation.destinations.WatchlistScreenDestination
 import com.willor.sentinel.ui.theme.Sizes
 
 
@@ -79,11 +79,10 @@ fun DashboardScreen(
         futuresData = futures,
         watchlistData = watchlist,
         sentinelWatchlist = curSentinelWatchlist,
-        btmbarEditWatchlistOnClick = {},
+        btmbarEditWatchlistOnClick = {
+            navigator.navigate(WatchlistScreenDestination)
+        },
         btmBarStartSentinelOnClick = {
-
-
-
             navigator.navigate(SentinelActiveScreenDestination)
         },
         watchlistChipOnClick = {
@@ -92,7 +91,7 @@ fun DashboardScreen(
         watchlistCardOnClick = {
             // TODO Navigate to the Quote screen
 //            navigator.navigate(QuoteScreenDestination(it))
-            navigator.navigate(QuoteScreenV2Destination(it))
+            navigator.navigate(QuoteScreenDestination(it))
         },
         watchlistCardAddOnClick = {
             viewModel.addTickerToSentinelWatchlist(
@@ -222,13 +221,3 @@ fun DashboardScreenContent(
         }
     }
 }
-
-
-
-
-
-
-
-
-
-

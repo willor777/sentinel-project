@@ -1,8 +1,6 @@
-package com.willor.sentinel.presentation.quotev2
+package com.willor.sentinel.presentation.quote
 
 import android.util.Log
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -17,11 +15,7 @@ import com.willor.lib_data.data.local.preferences.SentinelSettings
 import com.willor.sentinel.presentation.common.AnimatedLoadingWidget
 import com.willor.sentinel.presentation.common.SentinelWatchlistLazyRow
 import com.willor.sentinel.presentation.common.TickerSymbolSearchBar
-import com.willor.sentinel.presentation.quote.components.QuoteBottomAppBar
-import com.willor.sentinel.presentation.quote.components.QuoteTopAppBar
-import com.willor.sentinel.presentation.quotev2.components.ETFQuoteDisplayV2
-import com.willor.sentinel.presentation.quotev2.components.OptionStatsDisplayContentV2
-import com.willor.sentinel.presentation.quotev2.components.StockQuoteDisplayV2
+import com.willor.sentinel.presentation.quote.components.*
 import com.willor.sentinel.ui.theme.Sizes
 
 
@@ -81,11 +75,12 @@ internal fun QuoteScreenV2ContentHolder(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(.8f)
+                .fillMaxHeight(.9f)
                 .padding(
                     Sizes.HORIZONTAL_EDGE_PADDING,
                     Sizes.VERTICAL_EDGE_PADDING
-                )
+                ),
+            verticalArrangement = Arrangement.SpaceAround
 
         ){
 
@@ -170,12 +165,13 @@ private fun QuoteDisplay(
     optionStats: State<OptionStats?>,
 ){
 
-    var scrollState = rememberScrollState()
+    val scrollState = rememberScrollState()
 
     // No padding is needed
     Column(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxWidth()
+            .fillMaxHeight(.8f)
             .verticalScroll(scrollState)
     ){
         if (stockQuote.value != null){
@@ -190,60 +186,3 @@ private fun QuoteDisplay(
         }
     }
 }
-
-
-//
-//Column(
-//Modifier.padding(Sizes.HORIZONTAL_EDGE_PADDING, Sizes.VERTICAL_EDGE_PADDING)
-//){
-//
-//    TickerSymbolSearchBar(
-//        onTextChange = {
-//            onSearchTextChange(it)
-//        },
-//        onSearchClick = {
-//            onSearchClick(it)
-//        },
-//        onSuggestionItemClicked = {
-//            onSuggestionItemClicked(it)
-//        },
-//        searchResults = searchResults
-//    )
-//
-//    // Base stats of symbol
-//    QuoteBaseStats(
-//        stockQuote = stockQuote,
-//        etfQuote = etfQuote,
-//        quoteFailed = quoteFailed,
-//        onRetryClicked = {
-//            onRetryClicked()
-//        }
-//    )
-//
-//    Spacer(Modifier.height(20.dp))
-//
-//    // Option stats of symbol
-//    OptionStatsDisplay(
-//        optionStats = optionStats,
-//        optionStatsFailed = optionStatsFailed,
-//        onRetryClicked = {
-//            onRetryClicked()
-//        }
-//    )
-//
-//    Column(
-//        modifier = Modifier.fillMaxWidth()
-//    ){
-//
-//        // Sentinel Watchlist Display
-//        SentinelWatchlistLazyRow(
-//            sentinelSettings = sentinelSettings,
-//            onTickerClicked = {
-//                Log.d("INFO", "SentinelWatchlistSimple onTickerClicked() -> $it")
-//                sentinelTickerOnClick(it)
-//            },
-//            onRemoveTickerClicked = {sentinelTickerRemoveOnClick(it)}
-//        )
-//    }
-//
-//}

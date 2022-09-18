@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.willor.lib_data.data.local.preferences.SentinelSettings
+import com.willor.lib_data.utils.printToTestingLog
 import com.willor.sentinel.ui.theme.Sizes
 
 
@@ -29,10 +30,12 @@ fun SentinelWatchlistLazyRow(
     // Pull watchlist either from settings or hardcoded list
     val tickList = sentinelSettings?.value?.currentWatchlist ?: tickerList
 
+    printToTestingLog("Ticker List: ${tickList}, Sentinel Settings: $sentinelSettings")
+
     Column(
         Modifier
             .fillMaxWidth()
-            .wrapContentSize()
+            .wrapContentHeight()
             .padding(Sizes.HORIZONTAL_EDGE_PADDING, Sizes.VERTICAL_EDGE_PADDING)
             .background(MaterialTheme.colorScheme.tertiary)
     ){

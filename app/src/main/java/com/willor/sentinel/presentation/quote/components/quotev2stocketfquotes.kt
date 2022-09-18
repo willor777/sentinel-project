@@ -1,20 +1,18 @@
-package com.willor.sentinel.presentation.quotev2.components
+package com.willor.sentinel.presentation.quote.components
 
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.willor.ktstockdata.marketdata.dataobjects.EtfQuote
 import com.willor.ktstockdata.marketdata.dataobjects.StockQuote
 import com.willor.sentinel.presentation.common.BidMarkAsk
-import com.willor.sentinel.presentation.quote.components.LabelValueRow
-import com.willor.sentinel.presentation.quote.components.TickerHeader
-import com.willor.sentinel.presentation.quote.components.ValueRangeBar
 import com.willor.sentinel.utils.*
 
-// TODO Better check for "if in prepost hours". Maybe check the actual time ? :P
+
 @Composable
 internal fun StockQuoteDisplayV2(stockQuote: State<StockQuote?>){
 
@@ -28,11 +26,20 @@ internal fun StockQuoteDisplayV2(stockQuote: State<StockQuote?>){
     val curPrice = if (q.prepostChangeDollar == 0.0){q.lastPriceRegMarket} else { q.prepostPrice }
 
 
-    TickerHeader(ticker = q.ticker)
+    TickerHeader(txt ="${q.ticker} Quote")
 
     Spacer(modifier = Modifier.height(20.dp))
 
     BidMarkAsk(bidPrice = q.bidPrice, askPrice = q.askPrice)
+
+    // Underline Effect
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center
+    ){
+        Spacer(Modifier.height(1.dp).fillMaxWidth(.85f).background(Color.LightGray))
+
+    }
 
     // Check for post market hours
     if (q.prepostChangeDollar != 0.0){
@@ -106,10 +113,10 @@ internal fun StockQuoteDisplayV2(stockQuote: State<StockQuote?>){
     ValueRangeBar(
         highValue = q.daysRangeHigh,
         highLabel = "Day's High",
-        curPrice = curPrice,
+        curValue = q.lastPriceRegMarket,
         lowValue = q.daysRangeLow,
         lowLabel = "Day's Low",
-        topRowValue = curPrice,
+        showTopRowCurPrice = true,
         btmRowValue = q.daysRangeLow + ((q.daysRangeHigh - q.daysRangeLow) / 2.0),
         showMidPoint = true
     )
@@ -119,7 +126,7 @@ internal fun StockQuoteDisplayV2(stockQuote: State<StockQuote?>){
     ValueRangeBar(
         highValue = q.fiftyTwoWeekRangeHigh,
         highLabel = "52wk High",
-        curPrice = curPrice,
+        curValue = curPrice,
         lowValue = q.fiftyTwoWeekRangeLow,
         lowLabel = "52wk Low",
         btmRowValue = (q.fiftyTwoWeekRangeLow +
@@ -171,37 +178,72 @@ internal fun StockQuoteDisplayV2(stockQuote: State<StockQuote?>){
 @Composable
 internal fun ETFQuoteDisplayV2(etfQuote: State<EtfQuote?>){
 
+
     val q = etfQuote.value!!
     val glColorRegular = determineColorForPosOrNegValue(q.changePctRegMarket)
     val glColorPrepost = determineColorForPosOrNegValue(q.prepostChangeDollar)
     val volDiff = q.volume - q.avgVolume
     val volDiffColor = determineColorForPosOrNegValue(volDiff.toDouble())
 
-    TickerHeader(ticker = q.ticker)
+
+    TickerHeader(txt = "${q.ticker} ")
 
     Spacer(modifier = Modifier.height(20.dp))
 
     BidMarkAsk(bidPrice = q.bidPrice, askPrice = q.askPrice)
 
-    LabelValueRow(label = "Last Price", value = q.lastPriceRegMarket.toTwoDecimalPlacesString())
+    // Underline Effect
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center
+    ){
+        Spacer(Modifier.height(1.dp).fillMaxWidth(.85f).background(Color.LightGray))
 
-    LabelValueRow(
-        label = "Change",
-        value = buildChangeDollarChangePercentDisplayString(
-            q.changeDollarRegMarket, q.changePctRegMarket
-        ),
-        valueColor = glColorRegular
-    )
-
-    // Check if prepost data is available
+    }
+    // Check for post market hours
     if (q.prepostChangeDollar != 0.0){
-        LabelValueRow(label = "Prepost Price", value = q.prepostPrice.toTwoDecimalPlacesString())
+
         LabelValueRow(
-            label = "Prepost Change",
+            label = "Last Price",
+            value = q.lastPriceRegMarket.toTwoDecimalPlacesString(),
+            labelSubscript = "Market Hours"
+        )
+
+        LabelValueRow(
+            label = "Change",
+            value = buildChangeDollarChangePercentDisplayString(
+                q.changeDollarRegMarket, q.changePctRegMarket
+            ),
+            valueColor = glColorRegular,
+            labelSubscript = "Market Hours"
+        )
+
+        LabelValueRow(
+            label = "Last Price",
+            value = q.prepostPrice.toTwoDecimalPlacesString(),
+            labelSubscript = "Pre/Post"
+        )
+
+        LabelValueRow(
+            label = "Change",
             value = buildChangeDollarChangePercentDisplayString(
                 q.prepostChangeDollar, q.prepostChangePct
             ),
-            valueColor = glColorPrepost
+            valueColor = glColorPrepost,
+            labelSubscript = "Pre/Post"
+        )
+    }
+
+    // Regular market hours
+    else{
+        LabelValueRow(label = "Last Price", value = q.lastPriceRegMarket.toTwoDecimalPlacesString())
+
+        LabelValueRow(
+            label = "Change",
+            value = buildChangeDollarChangePercentDisplayString(
+                q.changeDollarRegMarket, q.changePctRegMarket
+            ),
+            valueColor = glColorRegular
         )
     }
 
@@ -230,7 +272,7 @@ internal fun ETFQuoteDisplayV2(etfQuote: State<EtfQuote?>){
     ValueRangeBar(
         highValue = q.daysRangeHigh,
         highLabel = "Day's High",
-        curPrice = q.lastPriceRegMarket,
+        curValue = q.lastPriceRegMarket,
         lowValue = q.daysRangeLow,
         lowLabel = "Day's Low"
     )
@@ -240,7 +282,7 @@ internal fun ETFQuoteDisplayV2(etfQuote: State<EtfQuote?>){
     ValueRangeBar(
         highValue = q.fiftyTwoWeekRangeHigh,
         highLabel = "52wk High",
-        curPrice = q.lastPriceRegMarket,
+        curValue = q.lastPriceRegMarket,
         lowValue = q.fiftyTwoWeekRangeLow,
         lowLabel = "52wk Low"
     )

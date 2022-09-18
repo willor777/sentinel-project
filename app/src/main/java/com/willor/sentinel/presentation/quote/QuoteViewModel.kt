@@ -6,12 +6,11 @@ import androidx.lifecycle.viewModelScope
 import com.willor.ktstockdata.marketdata.dataobjects.EtfQuote
 import com.willor.ktstockdata.marketdata.dataobjects.OptionStats
 import com.willor.ktstockdata.marketdata.dataobjects.StockQuote
-import com.willor.lib_data.StockSymbolsLoader
+import com.willor.lib_data.SymbolDataHelper
 import com.willor.lib_data.data.local.preferences.DatastorePrefsManager
 import com.willor.lib_data.data.local.preferences.SentinelSettings
 import com.willor.lib_data.domain.abstraction.IRepo
 import com.willor.lib_data.domain.abstraction.Resource
-import com.willor.lib_data.utils.printToTestingLog
 import com.willor.sentinel.utils.periodicCoroutineRepeatOnFailure
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -30,7 +29,7 @@ class QuoteViewModel @Inject constructor(
 ): ViewModel() {
 
     // Location tag is class name
-    private val locTAG = QuoteViewModel::class.java.name
+    private val locTAG = this::class.java.name
 
     /**
      * State Flows
@@ -71,7 +70,7 @@ class QuoteViewModel @Inject constructor(
     // Used by both jobs for updates
     private var curTicker = "NONE"
     private var quoteType = ""
-    
+
     // Update Intervals
     private val quoteUpdateInterval: Long = 60_000        // TODO Replace with settings
     private val optionUpdateInterval: Long = 300_000      // TODO Ditto
@@ -84,7 +83,7 @@ class QuoteViewModel @Inject constructor(
     private var curOptionFails = 0
     private var lastQuoteFail: Long = 0
     private var lastOptionStatsFail: Long = 0
-    
+
     // Updater Workers
     private var quoteUpdateWorker: Job? = null
     private var optionUpdateWorker: Job? = null
@@ -147,7 +146,7 @@ class QuoteViewModel @Inject constructor(
     private fun loadBigListOfStocks(){
 
         viewModelScope.launch(Dispatchers.IO){
-            val masterList = StockSymbolsLoader.loadSyms()
+            val masterList = SymbolDataHelper.loadsyms()
 
             val neededList = mutableListOf<List<String>>()
 
@@ -176,15 +175,47 @@ class QuoteViewModel @Inject constructor(
             return
         }
 
+//        viewModelScope.launch(Dispatchers.IO){
+//            val matches = mutableListOf<List<String>>()
+//
+//
+//            for (s in stockSymbolsList) {
+//                val (stock, compName) = s
+//
+//                if (stock.startsWith(usrTxt)) {
+//                    matches.add(s)
+//                }
+//            }
+//
+//            _searchMatchesV2.value = matches
+//        }
+
         viewModelScope.launch(Dispatchers.IO){
             val matches = mutableListOf<List<String>>()
 
+            val firstChar = usrTxt[0]
+            val startingLoc = SymbolDataHelper.findIndexLocationForChar(firstChar) ?: return@launch
+            for (indexLoc in startingLoc..stockSymbolsList.lastIndex){
 
-            for (s in stockSymbolsList) {
-                val (stock, compName) = s
+                // format -> [symbol, companyName, etfOrEquity]
+                val dataset = stockSymbolsList[indexLoc]
 
-                if (stock.startsWith(usrTxt)) {
-                    matches.add(s)
+                // Check if next letter has been reached
+                if (dataset[0][0] != firstChar){
+                    break
+                }
+
+                // Check for matches
+                if (
+                    dataset[0].startsWith(usrTxt)
+                    &&
+                            dataset[0] == dataset[0].uppercase()
+                    &&
+                            !dataset[0].contains(".")
+                    &&
+                            !dataset[0].contains(" ")
+                ){
+                    matches.add(dataset)
                 }
             }
 
@@ -337,7 +368,7 @@ class QuoteViewModel @Inject constructor(
                     success = true
                     _optionStats.value = optionStatsRequest.data
                 }
-            }            
+            }
         }
         return success
     }
@@ -348,7 +379,7 @@ class QuoteViewModel @Inject constructor(
      * Resets the quoteType when Cancel & Join happens.
      */
     private fun startQuoteUpdater(){
-        
+
         // Starts using coroutine so that previous workers can be canceled
         viewModelScope.launch(Dispatchers.IO){
             // Check for & Cancel previous UpdateWorker. Resets quote type

@@ -20,18 +20,18 @@ import com.willor.sentinel.utils.toTwoDecimalPlacesString
 fun ValueRangeBar(
     highValue: Double,
     highLabel: String,
-    curPrice: Double,
+    curValue: Double,
     lowValue: Double,
     lowLabel: String,
     valueType: String = "$",
-    topRowValue: Double? = null,
+    showTopRowCurPrice: Boolean? = null,
     btmRowValue: Double? = null,
     showMidPoint: Boolean = false,
 ){
 
     // Total size of range and cur progress
     val totalRangeSize = highValue - lowValue
-    val curProgress = curPrice - lowValue
+    val curProgress = curValue - lowValue
 
     // % of bar that should be filled
     val pctComplete = curProgress / totalRangeSize
@@ -46,7 +46,7 @@ fun ValueRangeBar(
             .wrapContentHeight()){
 
         // current value
-        if (topRowValue != null){
+        if (showTopRowCurPrice == true){
             Row(
                 Modifier
                     .wrapContentHeight()
@@ -62,7 +62,7 @@ fun ValueRangeBar(
                     color = MaterialTheme.colorScheme.onTertiary
                 )
                 Text(
-                    text = "$valueType${topRowValue.toTwoDecimalPlaceString()}",
+                    text = "$valueType${curValue.toTwoDecimalPlaceString()}",
                     fontSize = 11.sp,
                     fontWeight = FontWeight.Bold,
                     fontFamily = MaterialTheme.typography.bodySmall.fontFamily,
@@ -181,6 +181,3 @@ fun HighLowEndCaps(label: String, value: String){
         }
 
 }
-
-
-

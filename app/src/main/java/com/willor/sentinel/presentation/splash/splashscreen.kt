@@ -40,7 +40,7 @@ fun SplashScreen(
 
     LaunchedEffect(key1 = true) {
 //        delay(3500)
-        delay(1000)
+        delay(500)
         navigator.navigate(DashboardScreenDestination)
     }
 

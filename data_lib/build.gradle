@@ -69,9 +69,8 @@ dependencies {
     implementation 'com.opencsv:opencsv:4.6'
 
     // My Stuff
-//    implementation project(":ktStocksData")
     implementation project(':strategies')
-
-    implementation( 'com.github.willor777:ktstocks-project:0.0.6-alpha' )
+    // My Stock Data Lib -- ktstocks
+    implementation( 'com.github.willor777:ktstocks-project:0.0.7-alpha' )
 
 }

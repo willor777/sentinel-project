@@ -3,7 +3,6 @@ package com.willor.sentinel.presentation.common
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -28,7 +27,7 @@ fun WatchlistItemCard(
 
     Card(
         backgroundColor = MaterialTheme.colorScheme.secondary,
-        shape = RoundedCornerShape(Sizes.ROUNDED_CORNER_NORMAL),
+//        shape = RoundedCornerShape(Sizes.ROUNDED_CORNER_NORMAL),
         elevation = Sizes.ELEVATION_FOR_CARD,
 
     ){
@@ -294,5 +293,3 @@ private fun AddButton(
 
     }
 }
-
-

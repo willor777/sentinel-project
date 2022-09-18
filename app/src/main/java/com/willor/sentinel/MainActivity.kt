@@ -10,6 +10,8 @@ import androidx.compose.ui.Modifier
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import com.ramcosta.composedestinations.DestinationsNavHost
+import com.willor.lib_data.SymbolDataHelper
+import com.willor.lib_data.utils.printToTestingLog
 import com.willor.sentinel.presentation.NavGraphs
 import com.willor.sentinel.ui.theme.SentinelTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -22,8 +24,15 @@ class MainActivity : ComponentActivity() {
 
     private lateinit var datastore: DataStore<Preferences>
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // TODO Delete Me!!
+        printToTestingLog(
+            SymbolDataHelper.loadsyms()
+        )
 
         setContent {
             SentinelTheme {
@@ -39,4 +48,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-

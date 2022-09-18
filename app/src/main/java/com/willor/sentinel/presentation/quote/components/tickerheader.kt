@@ -1,27 +1,33 @@
 package com.willor.sentinel.presentation.quote.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.willor.sentinel.ui.theme.Sizes
 
 @Composable
 fun TickerHeader(
-    ticker: String
+    txt: String
 ){
     Row(
-        Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center
+        Modifier.fillMaxWidth()
+            .background(MaterialTheme.colorScheme.secondary)
+            .padding(Sizes.HORIZONTAL_EDGE_PADDING, Sizes.VERTICAL_PADDING_SMALL),
+        horizontalArrangement = Arrangement.Start
     ){
         Text(
-            ticker,
-            fontWeight = MaterialTheme.typography.bodyLarge.fontWeight,
-            fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-            fontFamily = MaterialTheme.typography.bodyLarge.fontFamily,
-            fontStyle = MaterialTheme.typography.bodyLarge.fontStyle
+            txt,
+            fontWeight = MaterialTheme.typography.titleLarge.fontWeight,
+            fontSize = MaterialTheme.typography.titleLarge.fontSize,
+            fontFamily = MaterialTheme.typography.titleLarge.fontFamily,
+            fontStyle = MaterialTheme.typography.titleLarge.fontStyle,
+            color = MaterialTheme.colorScheme.onSecondary
         )
     }
 }
