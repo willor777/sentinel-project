@@ -1,6 +1,5 @@
 package com.willor.sentinel.presentation.dash.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -25,7 +24,6 @@ fun WatchlistNameChip(
         modifier = Modifier
             .fillMaxWidth()
             .padding(Sizes.HORIZONTAL_EDGE_PADDING, Sizes.VERTICAL_PADDING_NORMAL)
-            .background(MaterialTheme.colorScheme.tertiary)
     ){
 
         LazyRow(Modifier.fillMaxWidth()){

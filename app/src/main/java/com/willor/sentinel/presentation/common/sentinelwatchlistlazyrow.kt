@@ -37,7 +37,6 @@ fun SentinelWatchlistLazyRow(
             .fillMaxWidth()
             .wrapContentHeight()
             .padding(Sizes.HORIZONTAL_EDGE_PADDING, Sizes.VERTICAL_EDGE_PADDING)
-            .background(MaterialTheme.colorScheme.tertiary)
     ){
 
         Row(Modifier.fillMaxWidth(),

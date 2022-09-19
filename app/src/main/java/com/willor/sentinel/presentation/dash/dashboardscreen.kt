@@ -62,7 +62,7 @@ fun DashboardScreen(
         },
         maxTime = 20_000,
         onMaxTimeReached = {
-
+            showErrorDialog = true
         }
     ) {
         Text("Loading...")
@@ -89,8 +89,6 @@ fun DashboardScreen(
             viewModel.changeYfWatchlist(it)
         },
         watchlistCardOnClick = {
-            // TODO Navigate to the Quote screen
-//            navigator.navigate(QuoteScreenDestination(it))
             navigator.navigate(QuoteScreenDestination(it))
         },
         watchlistCardAddOnClick = {
@@ -103,10 +101,9 @@ fun DashboardScreen(
             )
         },
         sentinelWatchlistCardOnClick = {
-            // TODO Navigate to the Quote screen
+            navigator.navigate(QuoteScreenDestination(it))
         },
         sentinelWatchlistRemoveTickerOnClick = {
-            // TODO Viewmodel should remove ticker from watchlist
             viewModel.removeTickerFromSentinelWatchlist(it)
         }
     )
@@ -187,7 +184,8 @@ fun DashboardScreenContent(
                     watchlistOptions = listOf(
                         WatchlistOptions.MOST_ACTIVE,
                         WatchlistOptions.GAINERS,
-                        WatchlistOptions.LOSERS
+                        WatchlistOptions.LOSERS,
+                        WatchlistOptions.LARGEST_FIFTY_TWO_WEEK_GAINS
                     )
                 ){wl ->
                     watchlistChipOnClick(wl)

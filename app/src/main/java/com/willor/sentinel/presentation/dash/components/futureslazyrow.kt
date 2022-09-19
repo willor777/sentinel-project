@@ -26,7 +26,6 @@ fun FuturesDisplay(
         modifier = Modifier
             .fillMaxWidth()
             .padding(Sizes.HORIZONTAL_EDGE_PADDING, Sizes.VERTICAL_PADDING_NORMAL)
-            .background(MaterialTheme.colorScheme.tertiary)
     ) {
 
         LazyRow(

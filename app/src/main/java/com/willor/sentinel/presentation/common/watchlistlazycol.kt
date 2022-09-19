@@ -34,7 +34,6 @@ fun WatchlistLazyCol(
             .fillMaxHeight(.75f)
             .fillMaxWidth()
             .padding(Sizes.HORIZONTAL_EDGE_PADDING, 0.dp)
-            .background(MaterialTheme.colorScheme.tertiary)
     ){
 
         // Lazy Column to display WatchlistTickerDisplayCard
